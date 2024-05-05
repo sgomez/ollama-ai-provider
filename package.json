@@ -10,15 +10,18 @@
   ],
   "scripts": {
     "build": "tsup",
+    "changeset": "changeset",
     "clean": "rm -rf dist",
     "dev": "tsup --watch",
+    "prepare": "husky",
     "lint": "eslint \"./**/*.ts*\"",
     "type-check": "tsc --noEmit",
     "prettier-check": "prettier --check \"./**/*.ts*\"",
     "test": "pnpm test:node && pnpm test:edge",
     "test:edge": "vitest --config vitest.edge.config.js --run",
     "test:node": "vitest --config vitest.node.config.js --run",
-    "prepare": "husky"
+    "ci:release": "pnpm clean && pnpm build && changeset publish",
+    "ci:version": "changeset version && pnpm install --no-frozen-lockfile"
   },
   "keywords": [
     "ai",
