@@ -30,7 +30,7 @@ const ollama = createOllama({
 });
 ```
 
-You can use the following optional settings to customize the Mistral provider instance:
+You can use the following optional settings to customize the Ollama provider instance:
 
 - **baseURL** _string_
 
@@ -47,5 +47,24 @@ You can use the following optional settings to customize the Mistral provider in
 The first argument is the model id, e.g. `phi3`.
 
 ```ts
-const model = mistral('phi3');
+const model = ollama('phi3');
 ```
+
+### Tested models and capabilities
+
+This provider is capable of generating and streaming text and objects. It does not
+support image input and function calling (tools). Object generation may fail depending 
+on the model used and the schema used.
+
+At least it has been verified to work on the following models:
+
+| Model      | Image input | Object generation  | Tool usage | Tool streaming |
+|------------|-------------|--------------------|------------|----------------|
+| llama2     | :x:         | :white_check_mark: | :x:        | :x:            | 
+| llama3     | :x:         | :white_check_mark: | :x:        | :x:            | 
+| llava      | :x:         | :white_check_mark: | :x:        | :x:            | 
+| mistral    | :x:         | :white_check_mark: | :x:        | :x:            | 
+| mixtral    | :x:         | :white_check_mark: | :x:        | :x:            | 
+| openhermes | :x:         | :white_check_mark: | :x:        | :x:            | 
+| phi3       | :x:         | :white_check_mark: | :x:        | :x:            | 
+

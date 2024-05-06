@@ -1,24 +1,6 @@
-import { InvalidPromptError, LanguageModelV1Prompt } from '@ai-sdk/provider'
+import { LanguageModelV1Prompt } from '@ai-sdk/provider'
 
 import { OllamaChatPrompt } from '@/ollama-chat-prompt'
-
-export function convertToOllamaGenerateMessage(
-  prompt: LanguageModelV1Prompt,
-): string {
-  if (
-    prompt.length === 1 &&
-    prompt[0].role === 'user' &&
-    prompt[0].content.length === 1 &&
-    prompt[0].content[0].type === 'text'
-  ) {
-    return prompt[0].content[0].text
-  }
-
-  throw new InvalidPromptError({
-    message: 'Invalid generate prompt message',
-    prompt,
-  })
-}
 
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,

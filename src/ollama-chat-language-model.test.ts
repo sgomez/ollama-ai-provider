@@ -18,7 +18,7 @@ const provider = createOllama()
 const model = provider.chat('llama3')
 
 describe('goGenerate', () => {
-  const server = new JsonTestServer('http://127.0.0.1:11434/api/generate')
+  const server = new JsonTestServer('http://127.0.0.1:11434/api/chat')
 
   server.setupTestEnvironment()
 
@@ -30,16 +30,18 @@ describe('goGenerate', () => {
     usage?: { eval_count: number; prompt_eval_count: number }
   }) {
     server.responseBodyJson = {
-      context: [1, 2, 3],
       created_at: '2023-08-04T19:22:45.499127Z',
       done: true,
       eval_count: usage.eval_count,
       eval_duration: 4_709_213_000,
       load_duration: 5_025_959,
+      message: {
+        content,
+        role: 'assistant',
+      },
       model: 'llama3',
       prompt_eval_count: usage.prompt_eval_count,
       prompt_eval_duration: 325_953_000,
-      response: content,
       total_duration: 5_043_500_667,
     }
   }
@@ -106,8 +108,9 @@ describe('goGenerate', () => {
     })
 
     expect(await server.getRequestBodyJson()).toStrictEqual({
+      messages: [{ content: 'Hello', role: 'user' }],
       model: 'llama3',
-      prompt: 'Hello',
+      options: {},
       stream: false,
     })
   })
@@ -213,6 +216,7 @@ describe('doStream', () => {
     expect(await server.getRequestBodyJson()).toStrictEqual({
       messages: [{ content: 'Hello', role: 'user' }],
       model: 'llama3',
+      options: {},
     })
   })
 

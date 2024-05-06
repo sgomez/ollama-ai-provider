@@ -13,10 +13,7 @@ import {
 } from '@ai-sdk/provider-utils'
 import { z } from 'zod'
 
-import {
-  convertToOllamaChatMessages,
-  convertToOllamaGenerateMessage,
-} from '@/convert-to-ollama-chat-messages'
+import { convertToOllamaChatMessages } from '@/convert-to-ollama-chat-messages'
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
 import { ollamaFailedResponseHandler } from '@/ollama-error'
@@ -44,19 +41,20 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   }
 
   private getArguments({
-    inputFormat,
     mode,
     prompt,
+    temperature,
   }: Parameters<LanguageModelV1['doGenerate']>[0]) {
     const type = mode.type
 
     const warnings: LanguageModelV1CallWarning[] = []
 
     const baseArguments = {
-      ...(inputFormat === 'prompt'
-        ? { messages: convertToOllamaGenerateMessage(prompt) }
-        : { messages: convertToOllamaChatMessages(prompt) }),
+      messages: convertToOllamaChatMessages(prompt),
       model: this.modelId,
+      options: {
+        temperature,
+      },
     }
 
     switch (type) {
@@ -70,9 +68,13 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       }
 
       case 'object-json': {
-        throw new UnsupportedFunctionalityError({
-          functionality: 'object-json mode',
-        })
+        return {
+          args: {
+            ...baseArguments,
+            format: 'json',
+          },
+          warnings,
+        }
       }
 
       case 'object-tool': {
@@ -97,31 +99,29 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   async doGenerate(
     options: Parameters<LanguageModelV1['doGenerate']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doGenerate']>>> {
-    const {
-      args: { messages: rawPrompt, ...rawSettings },
-      warnings,
-    } = this.getArguments(options)
+    const { args, warnings } = this.getArguments(options)
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
       body: {
-        ...rawSettings,
-        prompt: rawPrompt,
+        ...args,
         stream: false,
       },
       failedResponseHandler: ollamaFailedResponseHandler,
       headers: this.config.headers(),
       successfulResponseHandler: createJsonResponseHandler(
-        ollamaChatResponseSchema,
+        ollamaChatChunkSchema,
       ),
-      url: `${this.config.baseURL}/generate`,
+      url: `${this.config.baseURL}/chat`,
     })
+
+    const { messages: rawPrompt, ...rawSettings } = args
 
     return {
       finishReason: 'stop',
       rawCall: { rawPrompt, rawSettings },
       rawResponse: { headers: responseHeaders },
-      text: response.response,
+      text: response.message.content,
       usage: {
         completionTokens: Number.NaN,
         promptTokens: response.prompt_eval_count || Number.NaN,
@@ -199,17 +199,19 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   }
 }
 
-const ollamaChatResponseSchema = z.object({
-  context: z.number().array(),
+const ollamaChatChunkSchema = z.object({
   created_at: z.string(),
   done: z.literal(true),
   eval_count: z.number(),
   eval_duration: z.number(),
   load_duration: z.number().optional(),
+  message: z.object({
+    content: z.string(),
+    role: z.string(),
+  }),
   model: z.string(),
   prompt_eval_count: z.number().optional(),
   prompt_eval_duration: z.number().optional(),
-  response: z.string(),
   total_duration: z.number(),
 })
 
