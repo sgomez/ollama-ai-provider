@@ -34,6 +34,7 @@
     "sort/object-properties": "error",
     "sort/type-properties": "error",
     "unicorn/no-null": "off",
+    "unicorn/no-array-reduce": "off",
     "unused-imports/no-unused-imports": "error"
   }
 }

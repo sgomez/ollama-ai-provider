@@ -1,4 +1,8 @@
-import { LanguageModelV1Prompt } from '@ai-sdk/provider'
+import {
+  LanguageModelV1Prompt,
+  UnsupportedFunctionalityError,
+} from '@ai-sdk/provider'
+import { convertUint8ArrayToBase64 } from '@ai-sdk/provider-utils'
 
 import { OllamaChatPrompt } from '@/ollama-chat-prompt'
 
@@ -16,15 +20,29 @@ export function convertToOllamaChatMessages(
 
       case 'user': {
         messages.push({
-          content: content
-            .map((part) => {
-              switch (part.type) {
-                case 'text': {
-                  return part.text
-                }
+          ...content.reduce<{ content: string; images?: string[] }>(
+            (previous, current) => {
+              if (current.type === 'text') {
+                previous.content += current.text
+              } else if (
+                current.type === 'image' &&
+                current.image instanceof URL
+              ) {
+                throw new UnsupportedFunctionalityError({
+                  functionality: 'image-part',
+                })
+              } else if (
+                current.type === 'image' &&
+                current.image instanceof Uint8Array
+              ) {
+                previous.images = previous.images || []
+                previous.images.push(convertUint8ArrayToBase64(current.image))
               }
-            })
-            .join(''),
+
+              return previous
+            },
+            { content: '' },
+          ),
           role: 'user',
         })
         break
