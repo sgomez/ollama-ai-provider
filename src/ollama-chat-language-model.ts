@@ -41,9 +41,13 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   }
 
   private getArguments({
+    frequencyPenalty,
     mode,
+    presencePenalty,
     prompt,
+    seed,
     temperature,
+    topP,
   }: Parameters<LanguageModelV1['doGenerate']>[0]) {
     const type = mode.type
 
@@ -53,7 +57,11 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       messages: convertToOllamaChatMessages(prompt),
       model: this.modelId,
       options: {
+        frequency_penalty: frequencyPenalty,
+        presence_penalty: presencePenalty,
+        seed,
         temperature,
+        top_p: topP,
       },
     }
 
