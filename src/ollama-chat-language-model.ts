@@ -42,6 +42,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
   private getArguments({
     frequencyPenalty,
+    maxTokens,
     mode,
     presencePenalty,
     prompt,
@@ -58,9 +59,19 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       model: this.modelId,
       options: {
         frequency_penalty: frequencyPenalty,
+        mirostat: this.settings.mirostat,
+        mirostat_eta: this.settings.mirostatEta,
+        mirostat_tau: this.settings.mirostatTau,
+        num_ctx: this.settings.numCtx,
+        num_predict: maxTokens,
         presence_penalty: presencePenalty,
+        repeat_last_n: this.settings.repeatLastN,
+        repeat_penalty: this.settings.repeatPenalty,
         seed,
+        stop: this.settings.stop,
         temperature,
+        tfs_z: this.settings.tfsZ,
+        top_k: this.settings.topK,
         top_p: topP,
       },
     }

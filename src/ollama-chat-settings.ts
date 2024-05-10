@@ -40,4 +40,55 @@ export type OllamaChatModelId =
   | 'phi3:3.8b'
   | (string & NonNullable<unknown>)
 
-export interface OllamaChatSettings {}
+export interface OllamaChatSettings {
+  /**
+   * Enable Mirostat sampling for controlling perplexity. (default: 0, 0 = disabled, 1 = Mirostat, 2 = Mirostat 2.0)
+   */
+  mirostat?: 0 | 1 | 2
+
+  /**
+   * Influences how quickly the algorithm responds to feedback from the generated text. A lower learning rate will
+   * result in slower adjustments, while a higher learning rate will make the algorithm more responsive. (Default: 0.1)
+   */
+  mirostatEta?: number
+
+  /**
+   * Controls the balance between coherence and diversity of the output. A lower value will result in more focused and
+   * coherent text. (Default: 5.0)
+   */
+  mirostatTau?: number
+
+  /**
+   * Sets the size of the context window used to generate the next token. (Default: 2048)
+   */
+  numCtx?: number
+
+  /**
+   * Sets how far back for the model to look back to prevent repetition. (Default: 64, 0 = disabled, -1 = num_ctx)
+   */
+  repeatLastN?: number
+
+  /**
+   * Sets how strongly to penalize repetitions. A higher value (e.g., 1.5) will penalize repetitions more strongly
+   * , while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)
+   */
+  repeatPenalty?: number
+
+  /**
+   * Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return.
+   * Multiple stop patterns may be set by specifying multiple separate `stop` parameters in a modelfile.
+   */
+  stop?: string
+
+  /**
+   * Tail free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0)
+   * will reduce the impact more, while a value of 1.0 disables this setting. (default: 1)
+   */
+  tfsZ?: number
+
+  /**
+   * Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a
+   * lower value (e.g. 10) will be more conservative. (Default: 40)
+   */
+  topK?: number
+}
