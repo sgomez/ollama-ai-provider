@@ -1,5 +1,12 @@
 # ollama-ai-provider
 
+## 0.4.0
+
+### Minor Changes
+
+- - Added more models autocompletion
+  - Added extra ollama settings
+
 ## 0.3.0
 
 ### Minor Changes
