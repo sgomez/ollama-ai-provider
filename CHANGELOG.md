@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.5.0
+
+### Minor Changes
+
+- Add tool usage
+
 ## 0.4.0
 
 ### Minor Changes
