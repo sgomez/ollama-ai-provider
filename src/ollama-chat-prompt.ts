@@ -21,4 +21,14 @@ export interface OllamaAssistantMessage {
   content: string
   images?: Array<string>
   role: 'assistant'
+  tool_calls?: Array<MessageToolCall>
+}
+
+export interface MessageToolCall {
+  function: {
+    arguments: string
+    name: string
+  }
+  id: string
+  type: 'function'
 }

@@ -38,7 +38,7 @@
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@edge-runtime/vm": "^3.2.0",
-    "@types/node": "^18.19.31",
+    "@types/node": "^18.19.33",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^8.57.0",

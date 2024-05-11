@@ -71,7 +71,7 @@ describe('goGenerate', () => {
     })
 
     expect(usage).toStrictEqual({
-      completionTokens: Number.NaN,
+      completionTokens: 20,
       promptTokens: 25,
     })
   })

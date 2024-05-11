@@ -8,16 +8,18 @@ import {
 } from '@ai-sdk/provider'
 import {
   createJsonResponseHandler,
+  generateId,
   ParseResult,
   postJsonToApi,
 } from '@ai-sdk/provider-utils'
 import { z } from 'zod'
 
 import { convertToOllamaChatMessages } from '@/convert-to-ollama-chat-messages'
+import { inferToolCallsFromResponse } from '@/generate-tool/infer-tool-calls-from-response'
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
 import { ollamaFailedResponseHandler } from '@/ollama-error'
-import { createJsonStreamResponseHandler } from '@/utils'
+import { createJsonStreamResponseHandler, removeUndefined } from '@/utils'
 
 interface OllamaChatConfig {
   baseURL: string
@@ -55,9 +57,8 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     const warnings: LanguageModelV1CallWarning[] = []
 
     const baseArguments = {
-      messages: convertToOllamaChatMessages(prompt),
       model: this.modelId,
-      options: {
+      options: removeUndefined({
         frequency_penalty: frequencyPenalty,
         mirostat: this.settings.mirostat,
         mirostat_eta: this.settings.mirostatEta,
@@ -73,14 +74,25 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         tfs_z: this.settings.tfsZ,
         top_k: this.settings.topK,
         top_p: topP,
-      },
+      }),
     }
 
     switch (type) {
       case 'regular': {
+        const tools = mode.tools?.length ? mode.tools : undefined
+
         return {
           args: {
             ...baseArguments,
+            messages: convertToOllamaChatMessages(prompt, tools),
+            tools: tools?.map((tool) => ({
+              function: {
+                description: tool.description,
+                name: tool.name,
+                parameters: tool.parameters,
+              },
+              type: 'function',
+            })),
           },
           warnings,
         }
@@ -91,15 +103,35 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           args: {
             ...baseArguments,
             format: 'json',
+            messages: convertToOllamaChatMessages(prompt),
           },
           warnings,
         }
       }
 
       case 'object-tool': {
-        throw new UnsupportedFunctionalityError({
-          functionality: 'object-tool mode',
-        })
+        return {
+          args: {
+            ...baseArguments,
+            format: 'json',
+            messages: convertToOllamaChatMessages(prompt, [mode.tool]),
+            tool_choice: {
+              function: { name: mode.tool.name },
+              type: 'function',
+            },
+            tools: [
+              {
+                function: {
+                  description: mode.tool.description,
+                  name: mode.tool.name,
+                  parameters: mode.tool.parameters,
+                },
+                type: 'function',
+              },
+            ],
+          },
+          warnings,
+        }
       }
 
       case 'object-grammar': {
@@ -120,7 +152,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   ): Promise<Awaited<ReturnType<LanguageModelV1['doGenerate']>>> {
     const { args, warnings } = this.getArguments(options)
 
-    const { responseHeaders, value: response } = await postJsonToApi({
+    const { responseHeaders, value } = await postJsonToApi({
       abortSignal: options.abortSignal,
       body: {
         ...args,
@@ -129,21 +161,28 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       failedResponseHandler: ollamaFailedResponseHandler,
       headers: this.config.headers(),
       successfulResponseHandler: createJsonResponseHandler(
-        ollamaChatChunkSchema,
+        ollamaChatResponseSchema,
       ),
       url: `${this.config.baseURL}/chat`,
     })
+    const response = inferToolCallsFromResponse(value)
 
     const { messages: rawPrompt, ...rawSettings } = args
 
     return {
-      finishReason: 'stop',
+      finishReason: mapOllamaFinishReason(response.finish_reason),
       rawCall: { rawPrompt, rawSettings },
       rawResponse: { headers: responseHeaders },
-      text: response.message.content,
+      text: response.message.content ?? undefined,
+      toolCalls: response.message.tool_calls?.map((toolCall) => ({
+        args: toolCall.function.arguments,
+        toolCallId: generateId(),
+        toolCallType: 'function',
+        toolName: toolCall.function.name,
+      })),
       usage: {
-        completionTokens: Number.NaN,
-        promptTokens: response.prompt_eval_count || Number.NaN,
+        completionTokens: response.eval_count || 0,
+        promptTokens: response.prompt_eval_count || 0,
       },
       warnings,
     }
@@ -218,21 +257,35 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   }
 }
 
-const ollamaChatChunkSchema = z.object({
+const ollamaChatResponseSchema = z.object({
   created_at: z.string(),
   done: z.literal(true),
   eval_count: z.number(),
   eval_duration: z.number(),
+  finish_reason: z.string().optional().nullable(),
   load_duration: z.number().optional(),
   message: z.object({
     content: z.string(),
     role: z.string(),
+    tool_calls: z
+      .array(
+        z.object({
+          function: z.object({
+            arguments: z.string(),
+            name: z.string(),
+          }),
+        }),
+      )
+      .optional()
+      .nullable(),
   }),
   model: z.string(),
   prompt_eval_count: z.number().optional(),
   prompt_eval_duration: z.number().optional(),
   total_duration: z.number(),
 })
+
+export type OllamaChatResponseSchema = z.infer<typeof ollamaChatResponseSchema>
 
 const ollamaChatStreamChunkSchema = z.discriminatedUnion('done', [
   z.object({

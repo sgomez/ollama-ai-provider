@@ -1,20 +1,32 @@
 import {
+  LanguageModelV1FunctionTool,
   LanguageModelV1Prompt,
   UnsupportedFunctionalityError,
 } from '@ai-sdk/provider'
 import { convertUint8ArrayToBase64 } from '@ai-sdk/provider-utils'
 
+import { injectToolsSchemaIntoSystem } from '@/generate-tool/inject-tools-schema-into-system'
 import { OllamaChatPrompt } from '@/ollama-chat-prompt'
 
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,
+  tools?: LanguageModelV1FunctionTool[],
 ): OllamaChatPrompt {
   const messages: OllamaChatPrompt = []
+
+  let hasSystem = false
 
   for (const { content, role } of prompt) {
     switch (role) {
       case 'system': {
-        messages.push({ content, role: 'system' })
+        messages.push({
+          content: injectToolsSchemaIntoSystem({
+            system: content,
+            tools,
+          }),
+          role: 'system',
+        })
+        hasSystem = true
         break
       }
 
@@ -69,6 +81,16 @@ export function convertToOllamaChatMessages(
         throw new Error(`Unsupported role: ${_exhaustiveCheck}`)
       }
     }
+  }
+
+  if (!hasSystem && tools) {
+    messages.unshift({
+      content: injectToolsSchemaIntoSystem({
+        system: '',
+        tools,
+      }),
+      role: 'system',
+    })
   }
 
   return messages

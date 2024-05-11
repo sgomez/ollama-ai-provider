@@ -16,7 +16,7 @@
     "strict": true,
     "types": ["@types/node", "vitest/globals"],
     "jsx": "react-jsx",
-    "lib": ["dom", "ES2015"],
+    "lib": ["dom", "ES2021"],
     "module": "ESNext",
     "target": "ES2018",
     "stripInternal": true,

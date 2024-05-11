@@ -19,7 +19,6 @@
       "error",
       { "ignoreRestSiblings": true }
     ],
-    "camelcase": "error",
     "default-case-last": "error",
     "default-param-last": "error",
     "dot-notation": "error",
