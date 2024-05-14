@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.5.1
+
+### Patch Changes
+
+- Minor updates
+
 ## 0.5.0
 
 ### Minor Changes
