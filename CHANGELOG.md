@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.6.0
+
+### Minor Changes
+
+- Add embedding model
+
 ## 0.5.1
 
 ### Patch Changes
