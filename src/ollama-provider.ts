@@ -1,6 +1,12 @@
+import { withoutTrailingSlash } from '@ai-sdk/provider-utils'
+
 import { OllamaChatLanguageModel } from '@/ollama-chat-language-model'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
-import { Ollama } from '@/ollama-facade'
+import { OllamaEmbeddingModel } from '@/ollama-embedding-model'
+import {
+  OllamaEmbeddingModelId,
+  OllamaEmbeddingSettings,
+} from '@/ollama-embedding-settings'
 
 export interface OllamaProvider {
   (
@@ -12,6 +18,11 @@ export interface OllamaProvider {
     modelId: OllamaChatModelId,
     settings?: OllamaChatSettings,
   ): OllamaChatLanguageModel
+
+  embedding(
+    modelId: OllamaEmbeddingModelId,
+    settings?: OllamaEmbeddingSettings,
+  ): OllamaEmbeddingModel
 }
 
 export interface OllamaProviderSettings {
@@ -23,7 +34,32 @@ export interface OllamaProviderSettings {
 export function createOllama(
   options: OllamaProviderSettings = {},
 ): OllamaProvider {
-  const ollama = new Ollama(options)
+  const baseURL =
+    withoutTrailingSlash(options.baseURL) ?? 'http://127.0.0.1:11434/api'
+
+  const getHeaders = () => ({
+    ...options.headers,
+  })
+
+  const createChatModel = (
+    modelId: OllamaChatModelId,
+    settings: OllamaChatSettings = {},
+  ) =>
+    new OllamaChatLanguageModel(modelId, settings, {
+      baseURL,
+      headers: getHeaders,
+      provider: 'ollama.chat',
+    })
+
+  const createEmbeddingModel = (
+    modelId: OllamaEmbeddingModelId,
+    settings: OllamaEmbeddingSettings = {},
+  ) =>
+    new OllamaEmbeddingModel(modelId, settings, {
+      baseURL,
+      headers: getHeaders,
+      provider: 'ollama.embedding',
+    })
 
   const provider = function (
     modelId: OllamaChatModelId,
@@ -35,10 +71,11 @@ export function createOllama(
       )
     }
 
-    return ollama.chat(modelId, settings)
+    return createChatModel(modelId, settings)
   }
 
-  provider.chat = ollama.chat.bind(ollama)
+  provider.chat = createChatModel
+  provider.embedding = createEmbeddingModel
 
   return provider as OllamaProvider
 }

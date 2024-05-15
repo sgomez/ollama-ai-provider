@@ -23,7 +23,6 @@ import { createJsonStreamResponseHandler, removeUndefined } from '@/utils'
 
 interface OllamaChatConfig {
   baseURL: string
-  generateId: () => string
   headers: () => Record<string, string | undefined>
   provider: string
 }
