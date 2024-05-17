@@ -1,0 +1,20 @@
+{
+  "name": "ollama-ai-provider-core-examples",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "ai": "latest",
+    "commander": "^12.0.0",
+    "ollama-ai-provider": "workspace:latest",
+    "zod": "3.22.4",
+    "zod-to-json-schema": "3.22.4"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.15",
+    "@types/node": "20.11.20",
+    "json-schema": "^0.4.0",
+    "tsx": "4.7.1",
+    "typescript": "5.1.3"
+  }
+}

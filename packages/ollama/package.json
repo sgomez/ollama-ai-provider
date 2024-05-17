@@ -1,0 +1,53 @@
+{
+  "name": "ollama-ai-provider",
+  "version": "0.5.2",
+  "description": "Vercel AI Provider for running LLMs locally using Ollama",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "dev": "tsup --watch",
+    "lint": "eslint \"./**/*.ts*\"",
+    "type-check": "tsc --noEmit",
+    "prettier-check": "prettier --check \"./**/*.ts*\"",
+    "test": "pnpm test:node && pnpm test:edge",
+    "test:edge": "vitest --config vitest.edge.config.js --run",
+    "test:node": "vitest --config vitest.node.config.js --run"
+  },
+  "keywords": [
+    "ai",
+    "vercel-ai"
+  ],
+  "author": "Sergio Gómez Bachiller <decano@gmail.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@ai-sdk/provider": "0.0.5",
+    "@ai-sdk/provider-utils": "0.0.8"
+  },
+  "devDependencies": {
+    "@edge-runtime/vm": "^3.2.0",
+    "@types/node": "^18.19.33",
+    "tsup": "^8.0.2",
+    "typescript": "5.1.3",
+    "zod": "3.22.4"
+  },
+  "peerDependencies": {
+    "zod": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
