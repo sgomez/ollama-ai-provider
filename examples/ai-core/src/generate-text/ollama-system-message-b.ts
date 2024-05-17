@@ -1,11 +1,11 @@
 #! /usr/bin/env -S pnpm tsx
+
 import { generateText } from 'ai'
 import { ollama } from 'ollama-ai-provider'
-import { OllamaChatModelId } from 'ollama-ai-provider/src/ollama-chat-settings'
 
 import { buildProgram } from '../tools/command'
 
-async function main(model: OllamaChatModelId) {
+async function main(model: Parameters<typeof ollama>[0]) {
   const result = await generateText({
     messages: [{ content: 'What is the capital of France?', role: 'user' }],
     model: ollama(model),

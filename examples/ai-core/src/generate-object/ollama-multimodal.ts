@@ -1,13 +1,14 @@
+#! /usr/bin/env -S pnpm tsx
+
 import fs from 'node:fs'
 
 import { generateObject } from 'ai'
 import { ollama } from 'ollama-ai-provider'
-import { OllamaChatModelId } from 'ollama-ai-provider/src/ollama-chat-settings'
 import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 
-async function main(model: OllamaChatModelId) {
+async function main(model: Parameters<typeof ollama>[0]) {
   const { object } = await generateObject({
     messages: [
       {

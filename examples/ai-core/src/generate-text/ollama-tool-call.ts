@@ -1,13 +1,13 @@
 #! /usr/bin/env -S pnpm tsx
+
 import { generateText, tool } from 'ai'
 import { ollama } from 'ollama-ai-provider'
-import { OllamaChatModelId } from 'ollama-ai-provider/src/ollama-chat-settings'
 import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 import { weatherTool } from '../tools/weather-tool'
 
-async function main(model: OllamaChatModelId) {
+async function main(model: Parameters<typeof ollama>[0]) {
   const result = await generateText({
     maxTokens: 512,
     model: ollama(model),
