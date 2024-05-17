@@ -19,4 +19,4 @@ async function main(model: OllamaEmbeddingModelId) {
   console.log(embeddings)
 }
 
-buildProgram('all-minilm', main).catch(console.error)
+buildProgram('nomic-embed-text', main).catch(console.error)
