@@ -1,7 +1,9 @@
 import { Command } from 'commander'
+import { OllamaChatModelId } from 'ollama-ai-provider/src/ollama-chat-settings'
+import { OllamaEmbeddingModelId } from 'ollama-ai-provider/src/ollama-embedding-settings'
 
 export async function buildProgram(
-  defaultModel: string,
+  defaultModel: OllamaChatModelId | OllamaEmbeddingModelId,
   action: (model: string) => Promise<void>,
 ) {
   const program = new Command()
