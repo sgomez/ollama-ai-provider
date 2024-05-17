@@ -1,7 +1,7 @@
 import { relative } from 'path'
 
 const buildEslintCommand = (filenames) =>
-  `pnpm lint --fix ${filenames
+  `pnpm eslint --fix ${filenames
     .map((f) => relative(process.cwd(), f))
     .join(' ')}`
 

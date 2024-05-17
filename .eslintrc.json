@@ -13,6 +13,7 @@
     "unused-imports"
   ],
   "root": true,
+  "ignorePatterns": "**/dist/*",
   "rules": {
     "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-unused-vars": [
@@ -35,5 +36,13 @@
     "unicorn/no-null": "off",
     "unicorn/no-array-reduce": "off",
     "unused-imports/no-unused-imports": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": "examples/**/*.ts",
+      "rules": {
+        "unicorn/prefer-top-level-await": "off"
+      }
+    }
+  ]
 }
