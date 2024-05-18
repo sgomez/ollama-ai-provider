@@ -11,6 +11,7 @@ import { OllamaChatPrompt } from '@/ollama-chat-prompt'
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,
   tools?: LanguageModelV1FunctionTool[],
+  toolChoice?: string,
 ): OllamaChatPrompt {
   const messages: OllamaChatPrompt = []
 
@@ -22,6 +23,7 @@ export function convertToOllamaChatMessages(
         messages.push({
           content: injectToolsSchemaIntoSystem({
             system: content,
+            toolChoice,
             tools,
           }),
           role: 'system',
@@ -87,6 +89,7 @@ export function convertToOllamaChatMessages(
     messages.unshift({
       content: injectToolsSchemaIntoSystem({
         system: '',
+        toolChoice,
         tools,
       }),
       role: 'system',
