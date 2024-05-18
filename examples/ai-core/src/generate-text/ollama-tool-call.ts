@@ -58,4 +58,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log(JSON.stringify(result, null, 2))
 }
 
-buildProgram('openhermes', main).catch(console.error)
+buildProgram('mistral', main).catch(console.error)
