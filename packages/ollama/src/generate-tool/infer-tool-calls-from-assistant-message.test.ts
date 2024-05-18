@@ -4,7 +4,7 @@ import { inferToolCallsFromResponse } from '@/generate-tool/infer-tool-calls-fro
 import { OllamaChatResponseSchema } from '@/ollama-chat-language-model'
 
 describe('inferToolCallsFromAssistantMessage', () => {
-  it('should infer valid tool calls', () => {
+  it('should infer valid selected tools response', () => {
     // Arrange
     const response = {
       finish_reason: 'stop',
@@ -12,6 +12,36 @@ describe('inferToolCallsFromAssistantMessage', () => {
         content: JSON.stringify([
           { arguments: { numbers: [2, 3] }, name: 'sum' },
         ]),
+        role: 'assistant',
+      },
+    } as OllamaChatResponseSchema
+
+    // Act
+    const parsedResponse = inferToolCallsFromResponse(response)
+
+    // Assert
+    expect(parsedResponse.finish_reason).toEqual('tool-calls')
+    expect(parsedResponse.message.tool_calls).toContainEqual(
+      expect.objectContaining({
+        function: {
+          arguments: JSON.stringify({ numbers: [2, 3] }),
+          name: 'sum',
+        },
+        id: expect.any(String),
+        type: 'function',
+      }),
+    )
+  })
+
+  it('should infer valid selected tool response', () => {
+    // Arrange
+    const response = {
+      finish_reason: 'stop',
+      message: {
+        content: JSON.stringify({
+          arguments: { numbers: [2, 3] },
+          name: 'sum',
+        }),
         role: 'assistant',
       },
     } as OllamaChatResponseSchema
