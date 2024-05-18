@@ -13,25 +13,24 @@ export function injectToolsSchemaIntoSystem({
   schemaPrefix = DEFAULT_SCHEMA_PREFIX,
   schemaSuffix = DEFAULT_SCHEMA_SUFFIX,
   system,
+  toolChoice,
   tools,
 }: {
   schemaPrefix?: string
   schemaSuffix?: string
   system: string
+  toolChoice?: string
   tools?: LanguageModelV1FunctionTool[]
-  // tools: JSONSchema7
 }): string {
-  if (!tools) {
+  const selectedTools = tools?.filter(
+    (tool) => !toolChoice || tool.name === toolChoice,
+  )
+
+  if (!selectedTools) {
     return system
   }
 
-  return [
-    system,
-    system === null ? null : '', // add a newline if system is not null
-    schemaPrefix,
-    JSON.stringify(tools),
-    schemaSuffix,
-  ]
+  return [system, schemaPrefix, JSON.stringify(selectedTools), schemaSuffix]
     .filter((line) => line !== null)
     .join('\n')
 }

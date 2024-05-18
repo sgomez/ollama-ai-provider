@@ -113,7 +113,11 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           args: {
             ...baseArguments,
             format: 'json',
-            messages: convertToOllamaChatMessages(prompt, [mode.tool]),
+            messages: convertToOllamaChatMessages(
+              prompt,
+              [mode.tool],
+              mode.tool.name,
+            ),
             tool_choice: {
               function: { name: mode.tool.name },
               type: 'function',

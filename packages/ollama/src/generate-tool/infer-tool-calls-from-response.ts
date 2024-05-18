@@ -8,7 +8,11 @@ export function inferToolCallsFromResponse(
 ): OllamaChatResponseSchema {
   try {
     const tool = JSON.parse(response.message.content)
-    const parsedTools = toolResponseSchema.parse(tool)
+
+    let parsedTools = toolResponseSchema.parse(tool)
+    if (!Array.isArray(parsedTools)) {
+      parsedTools = [parsedTools]
+    }
 
     return {
       ...response,
@@ -34,9 +38,15 @@ export function inferToolCallsFromResponse(
   }
 }
 
-const toolResponseSchema = z.array(
+const toolResponseSchema = z.union([
+  z.array(
+    z.object({
+      arguments: z.record(z.unknown()),
+      name: z.string(),
+    }),
+  ),
   z.object({
     arguments: z.record(z.unknown()),
     name: z.string(),
   }),
-)
+])
