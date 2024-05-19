@@ -32,4 +32,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   }
 }
 
-buildProgram('llama3', main).catch(console.error)
+buildProgram('mistral', main).catch(console.error)

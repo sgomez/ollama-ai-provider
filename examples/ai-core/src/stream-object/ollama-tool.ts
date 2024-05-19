@@ -9,7 +9,7 @@ import { buildProgram } from '../tools/command'
 async function main(model: Parameters<typeof ollama>[0]) {
   const result = await streamObject({
     maxTokens: 2000,
-    mode: 'json',
+    mode: 'tool',
     model: ollama(model),
     prompt:
       'Generate 3 character descriptions for a fantasy role playing game.',
@@ -26,25 +26,9 @@ async function main(model: Parameters<typeof ollama>[0]) {
     }),
   })
 
-  for await (const part of result.fullStream) {
-    switch (part.type) {
-      case 'object': {
-        console.clear()
-        console.log(part.object)
-        break
-      }
-
-      case 'finish': {
-        console.log('Finish reason:', part.finishReason)
-        console.log('Usage:', part.usage)
-        break
-      }
-
-      case 'error': {
-        console.error('Error:', part.error)
-        break
-      }
-    }
+  for await (const partialObject of result.partialObjectStream) {
+    console.clear()
+    console.log(partialObject)
   }
 }
 
