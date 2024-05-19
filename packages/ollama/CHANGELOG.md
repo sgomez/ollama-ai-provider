@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.7.0
+
+### Minor Changes
+
+- Add experimental tool streaming
+
 ## 0.6.0
 
 ### Minor Changes
