@@ -16,6 +16,7 @@ import { z } from 'zod'
 
 import { convertToOllamaChatMessages } from '@/convert-to-ollama-chat-messages'
 import { inferToolCallsFromResponse } from '@/generate-tool/infer-tool-calls-from-response'
+import { InferToolCallsFromStream } from '@/generate-tool/infer-tool-calls-from-stream'
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
 import { ollamaFailedResponseHandler } from '@/ollama-error'
@@ -93,6 +94,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
               type: 'function',
             })),
           },
+          type,
           warnings,
         }
       }
@@ -104,6 +106,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
             format: 'json',
             messages: convertToOllamaChatMessages(prompt),
           },
+          type,
           warnings,
         }
       }
@@ -133,6 +136,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
               },
             ],
           },
+          type,
           warnings,
         }
       }
@@ -194,7 +198,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   async doStream(
     options: Parameters<LanguageModelV1['doStream']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
-    const { args, warnings } = this.getArguments(options)
+    const { args, type, warnings } = this.getArguments(options)
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
@@ -208,6 +212,9 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     })
 
     const { messages: rawPrompt, ...rawSettings } = args
+
+    const inferToolCallsFromStream = new InferToolCallsFromStream({ type })
+
     let finishReason: LanguageModelV1FinishReason = 'other'
     let usage: { completionTokens: number; promptTokens: number } = {
       completionTokens: Number.NaN,
@@ -238,11 +245,21 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
             const value = chunk.value
 
             if (value.done) {
-              finishReason = mapOllamaFinishReason('stop')
+              finishReason = inferToolCallsFromStream.finish({ controller })
               usage = {
                 completionTokens: value.eval_count,
                 promptTokens: Number.NaN,
               }
+
+              return
+            }
+
+            const isToolCallStream = inferToolCallsFromStream.parse({
+              controller,
+              delta: value.message.content,
+            })
+
+            if (isToolCallStream) {
               return
             }
 
