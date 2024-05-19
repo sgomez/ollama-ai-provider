@@ -180,6 +180,89 @@ describe('doStream', () => {
     ])
   })
 
+  it('should stream tool deltas', async () => {
+    // Arrange
+
+    server.responseChunks = [
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"name\\":"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"json\\","},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"argum"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ents\\":"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"numb"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ers\\":"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"[1,2]}"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"}"},"done":false}\n`,
+      `{"model":"llama3","created_at":"2024-05-04T01:59:32.137913Z","message":{"role":"assistant","content":""},"done":true,"total_duration":1820013000,"load_duration":5921416,"prompt_eval_count":10,"prompt_eval_duration":1750224000,"eval_count":10,"eval_duration":60669000}\n`,
+    ]
+    // Act
+    const { stream } = await model.doStream({
+      inputFormat: 'prompt',
+      mode: {
+        tool: {
+          description: 'Test tool',
+          name: 'test-tool',
+          parameters: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            additionalProperties: false,
+            properties: { value: { type: 'string' } },
+            required: ['value'],
+            type: 'object',
+          },
+          type: 'function',
+        },
+        type: 'object-tool',
+      },
+      prompt: TEST_PROMPT,
+    })
+
+    // Assert
+    expect(await convertStreamToArray(stream)).toStrictEqual([
+      {
+        argsTextDelta: '{"numb',
+        toolCallId: expect.any(String),
+        toolCallType: 'function',
+        toolName: 'json',
+        type: 'tool-call-delta',
+      },
+      {
+        argsTextDelta: 'ers":',
+        toolCallId: expect.any(String),
+        toolCallType: 'function',
+        toolName: 'json',
+        type: 'tool-call-delta',
+      },
+      {
+        argsTextDelta: '[1,2]}',
+        toolCallId: expect.any(String),
+        toolCallType: 'function',
+        toolName: 'json',
+        type: 'tool-call-delta',
+      },
+      {
+        argsTextDelta: '}',
+        toolCallId: expect.any(String),
+        toolCallType: 'function',
+        toolName: 'json',
+        type: 'tool-call-delta',
+      },
+      {
+        args: '{"numbers":[1,2]}',
+        toolCallId: expect.any(String),
+        toolCallType: 'function',
+        toolName: 'json',
+        type: 'tool-call',
+      },
+      {
+        finishReason: 'stop',
+        type: 'finish',
+        usage: {
+          completionTokens: 10,
+          promptTokens: Number.NaN,
+        },
+      },
+    ])
+  })
+
   it('should expose the raw response headers', async () => {
     prepareStreamResponse({ content: [] })
 

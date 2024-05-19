@@ -3,11 +3,6 @@
 
 define RUN_EXAMPLE_TARGET
 	echo -- examples/$(subst _,/,$(1))
-	pnpm tsx src/$(subst _,/,$(1)).ts > /dev/null
-endef
-
-define RUN_EXAMPLE_CHAT
-	echo -- examples/$(subst _,/,$(1))
 	pnpm tsx src/$(subst _,/,$(1)).ts
 endef
 
@@ -88,16 +83,18 @@ generate-text_ollama-tool-call:
 
 
 # stream-object
-.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json
+.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-tool
 stream-object: stream-object-run stream-object-all
 stream-object-run:
 	echo - examples/stream-object:
-stream-object-all: stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json
+stream-object-all: stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-tool
 stream-object_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-fullstream:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-json:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-object_ollama-tool:
 	$(call RUN_EXAMPLE_TARGET,$@)
 
 
@@ -106,17 +103,19 @@ stream-object_ollama-json:
 stream-text: stream-text-run stream-text-all
 stream-text-run:
 	echo - examples/stream-text:
-stream-text-all: stream-text_ollama stream-text_ollama-abort stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-reader
+stream-text-all: stream-text_ollama stream-text_ollama-abort stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-fullstream stream-text_ollama-reader
 stream-text_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-abort:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-chatbot: # manual
-	$(call RUN_EXAMPLE_CHAT,$@)
+	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-completion:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-completion-chat:
-	$(call RUN_EXAMPLE_CHAT,$@)
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-text_ollama-fullstream:
+	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-reader:
 	$(call RUN_EXAMPLE_TARGET,$@)
 
