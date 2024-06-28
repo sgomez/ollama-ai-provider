@@ -76,6 +76,9 @@ describe('doEmbed', () => {
 
     const requestHeaders = await server.getRequestHeaders()
 
-    expect(requestHeaders.get('Custom-Header')).toStrictEqual('test-header')
+    expect(requestHeaders).toStrictEqual({
+      'content-type': 'application/json',
+      'custom-header': 'test-header',
+    })
   })
 })
