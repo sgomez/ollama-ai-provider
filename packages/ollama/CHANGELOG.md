@@ -1,5 +1,12 @@
 # ollama-ai-provider
 
+## 0.8.0
+
+### Minor Changes
+
+- Update ai-sdk dependencies
+- Migrate createJsonStreamResponseHandler to ai-sdk utils
+
 ## 0.7.0
 
 ### Minor Changes
