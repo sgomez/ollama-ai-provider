@@ -68,6 +68,7 @@ export function convertToOllamaChatMessages(
             .map((part) => {
               switch (part.type) {
                 case 'text': {
+                  console.error(part.text)
                   return part.text
                 }
               }
