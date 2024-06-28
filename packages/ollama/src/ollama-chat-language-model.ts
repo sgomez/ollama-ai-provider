@@ -8,6 +8,7 @@ import {
 } from '@ai-sdk/provider'
 import {
   createJsonResponseHandler,
+  createJsonStreamResponseHandler,
   generateId,
   ParseResult,
   postJsonToApi,
@@ -20,7 +21,7 @@ import { InferToolCallsFromStream } from '@/generate-tool/infer-tool-calls-from-
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
 import { ollamaFailedResponseHandler } from '@/ollama-error'
-import { createJsonStreamResponseHandler, removeUndefined } from '@/utils'
+import { removeUndefined } from '@/utils'
 
 interface OllamaChatConfig {
   baseURL: string
