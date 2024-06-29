@@ -16,6 +16,7 @@ import { ollamaFailedResponseHandler } from '@/ollama-error'
 
 type OllamaEmbeddingConfig = {
   baseURL: string
+  fetch?: typeof fetch
   headers: () => Record<string, string | undefined>
   provider: string
 }
@@ -77,6 +78,7 @@ export class OllamaEmbeddingModel implements EmbeddingModelV1<string> {
           prompt: value,
         },
         failedResponseHandler: ollamaFailedResponseHandler,
+        fetch: this.config.fetch,
         headers: this.config.headers(),
         successfulResponseHandler: createJsonResponseHandler(
           ollamaTextEmbeddingResponseSchema,

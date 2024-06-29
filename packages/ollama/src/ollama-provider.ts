@@ -26,8 +26,22 @@ export interface OllamaProvider {
 }
 
 export interface OllamaProviderSettings {
+  /**
+   * Base URL for Ollama API calls.
+   */
   baseURL?: string
+  /**
+   * Custom fetch implementation. You can use it as a middleware to intercept
+   * requests or to provide a custom fetch implementation for e.g. testing
+   */
+  fetch?: typeof fetch
+  /**
+   * @internal
+   */
   generateId?: () => string
+  /**
+   * Custom headers to include in the requests.
+   */
   headers?: Record<string, string>
 }
 
@@ -47,6 +61,7 @@ export function createOllama(
   ) =>
     new OllamaChatLanguageModel(modelId, settings, {
       baseURL,
+      fetch: options.fetch,
       headers: getHeaders,
       provider: 'ollama.chat',
     })
@@ -57,6 +72,7 @@ export function createOllama(
   ) =>
     new OllamaEmbeddingModel(modelId, settings, {
       baseURL,
+      fetch: options.fetch,
       headers: getHeaders,
       provider: 'ollama.embedding',
     })

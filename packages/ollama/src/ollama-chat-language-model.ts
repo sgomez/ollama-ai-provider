@@ -25,6 +25,7 @@ import { removeUndefined } from '@/utils'
 
 interface OllamaChatConfig {
   baseURL: string
+  fetch?: typeof fetch
   headers: () => Record<string, string | undefined>
   provider: string
 }
@@ -167,6 +168,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         stream: false,
       },
       failedResponseHandler: ollamaFailedResponseHandler,
+      fetch: this.config.fetch,
       headers: this.config.headers(),
       successfulResponseHandler: createJsonResponseHandler(
         ollamaChatResponseSchema,
@@ -205,6 +207,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       abortSignal: options.abortSignal,
       body: args,
       failedResponseHandler: ollamaFailedResponseHandler,
+      fetch: this.config.fetch,
       headers: this.config.headers(),
       successfulResponseHandler: createJsonStreamResponseHandler(
         ollamaChatStreamChunkSchema,
