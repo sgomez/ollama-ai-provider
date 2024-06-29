@@ -117,3 +117,13 @@ We are waiting for the first characters before sending the deltas to detect if w
 
 Obviously, this is very buggy and should be used with caution. Right now, you cannot use it in chats and with more than
 one tool.
+
+### Intercepting Fetch Requests
+
+This provider supports [Intercepting Fetch Requests](https://sdk.vercel.ai/examples/providers/intercepting-fetch-requests).
+
+### Provider Management
+
+> Provider management is an experimental feature
+
+This provider supports [Provider Management](https://sdk.vercel.ai/docs/ai-sdk-core/provider-management).
