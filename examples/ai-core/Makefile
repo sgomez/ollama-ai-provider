@@ -6,7 +6,7 @@ define RUN_EXAMPLE_TARGET
 	pnpm tsx src/$(subst _,/,$(1)).ts
 endef
 
-all: complex embed embed-many generate-object generate-text stream-object stream-text
+all: complex embed embed-many registry generate-object generate-text stream-object stream-text
 
 # complex
 .PHONY: complex complex-run complex-all semantic-router_main
@@ -37,6 +37,18 @@ embed-many-all: embed-many_ollama embed-many_ollama-cosine-similarity
 embed-many_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 embed-many_ollama-cosine-similarity:
+	$(call RUN_EXAMPLE_TARGET,$@)
+
+
+# registry
+.PHONY: registry registry-run registry-all registry_embed registry_stream-text
+registry: registry-run registry-all
+registry-run:
+	echo - examples/registry:
+registry-all: registry_embed registry_stream-text
+registry_embed:
+	$(call RUN_EXAMPLE_TARGET,$@)
+registry_stream-text:
 	$(call RUN_EXAMPLE_TARGET,$@)
 
 
