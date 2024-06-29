@@ -1,6 +1,10 @@
-import { embed, Embedding, EmbeddingModel, embedMany } from 'ai'
-
-import { cosineSimilarity } from './cosine-similarity'
+import {
+  cosineSimilarity,
+  embed,
+  Embedding,
+  EmbeddingModel,
+  embedMany,
+} from 'ai'
 
 export interface Route<NAME extends string> {
   name: NAME
