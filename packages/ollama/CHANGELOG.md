@@ -1,5 +1,21 @@
 # ollama-ai-provider
 
+## 0.9.0
+
+### Minor Changes
+
+- New sdk-ai features:
+
+  - Intercepting fetch requests
+  - Provider Management
+
+-  New examples:
+
+  - Intercepting fetch requests
+  - Provider Management
+  - on-finish event
+  - update complex examples
+
 ## 0.8.0
 
 ### Minor Changes
