@@ -23,6 +23,16 @@ export interface OllamaProvider {
     modelId: OllamaEmbeddingModelId,
     settings?: OllamaEmbeddingSettings,
   ): OllamaEmbeddingModel
+
+  languageModel(
+    modelId: OllamaChatModelId,
+    settings?: OllamaChatSettings,
+  ): OllamaChatLanguageModel
+
+  textEmbedding(
+    modelId: OllamaEmbeddingModelId,
+    settings?: OllamaEmbeddingSettings,
+  ): OllamaEmbeddingModel
 }
 
 export interface OllamaProviderSettings {
@@ -92,6 +102,8 @@ export function createOllama(
 
   provider.chat = createChatModel
   provider.embedding = createEmbeddingModel
+  provider.languageModel = createChatModel
+  provider.textEmbedding = createEmbeddingModel
 
   return provider as OllamaProvider
 }
