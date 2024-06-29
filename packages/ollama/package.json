@@ -50,5 +50,13 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "homepage": "https://github.com/sgomez/ollama-ai-provider",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgomez/ollama-ai-provider.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sgomez/ollama-ai-provider/issues"
   }
 }
