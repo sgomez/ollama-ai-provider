@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.9.1
+
+### Patch Changes
+
+- Fix console assistant extra messages
+
 ## 0.9.0
 
 ### Minor Changes
@@ -9,12 +15,12 @@
   - Intercepting fetch requests
   - Provider Management
 
--  New examples:
+- New examples:
 
-  - Intercepting fetch requests
-  - Provider Management
-  - on-finish event
-  - update complex examples
+- Intercepting fetch requests
+- Provider Management
+- on-finish event
+- update complex examples
 
 ## 0.8.0
 
