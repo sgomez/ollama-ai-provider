@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.10.0
+
+### Minor Changes
+
+- Update json stream processor to split multiple lines
+
 ## 0.9.1
 
 ### Patch Changes
