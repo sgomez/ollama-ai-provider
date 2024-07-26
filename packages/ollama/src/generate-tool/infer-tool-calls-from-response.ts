@@ -22,7 +22,7 @@ export function inferToolCallsFromResponse(
         role: 'assistant',
         tool_calls: parsedTools.map((parsedTool) => ({
           function: {
-            arguments: JSON.stringify(parsedTool.arguments),
+            arguments: parsedTool.arguments,
             name: parsedTool.name,
           },
           id: generateId(),

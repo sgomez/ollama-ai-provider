@@ -4,6 +4,7 @@ export type OllamaChatMessage =
   | OllamaSystemMessage
   | OllamaUserMessage
   | OllamaAssistantMessage
+  | OllamaToolMessage
 
 export interface OllamaSystemMessage {
   content: string
@@ -22,6 +23,12 @@ export interface OllamaAssistantMessage {
   images?: Array<string>
   role: 'assistant'
   tool_calls?: Array<MessageToolCall>
+}
+
+export interface OllamaToolMessage {
+  content: unknown
+  role: 'tool'
+  tool_call_id: string
 }
 
 export interface MessageToolCall {

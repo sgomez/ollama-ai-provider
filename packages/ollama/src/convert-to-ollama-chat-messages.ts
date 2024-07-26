@@ -6,7 +6,7 @@ import {
 import { convertUint8ArrayToBase64 } from '@ai-sdk/provider-utils'
 
 import { injectToolsSchemaIntoSystem } from '@/generate-tool/inject-tools-schema-into-system'
-import { OllamaChatPrompt } from '@/ollama-chat-prompt'
+import { OllamaChatPrompt, OllamaToolMessage } from '@/ollama-chat-prompt'
 
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,
@@ -75,6 +75,20 @@ export function convertToOllamaChatMessages(
             .join(''),
           role: 'assistant',
         })
+        break
+      }
+
+      case 'tool': {
+        messages.push(
+          ...content.map(
+            (part) =>
+              ({
+                content: part.result,
+                role: 'tool',
+                tool_call_id: part.toolCallId,
+              }) as OllamaToolMessage,
+          ),
+        )
         break
       }
 

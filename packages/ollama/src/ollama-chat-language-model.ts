@@ -177,7 +177,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       rawResponse: { headers: responseHeaders },
       text: response.message.content ?? undefined,
       toolCalls: response.message.tool_calls?.map((toolCall) => ({
-        args: toolCall.function.arguments,
+        args: JSON.stringify(toolCall.function.arguments),
         toolCallId: generateId(),
         toolCallType: 'function',
         toolName: toolCall.function.name,
@@ -287,7 +287,7 @@ const ollamaChatResponseSchema = z.object({
       .array(
         z.object({
           function: z.object({
-            arguments: z.string(),
+            arguments: z.record(z.any()),
             name: z.string(),
           }),
         }),

@@ -24,7 +24,7 @@ describe('inferToolCallsFromAssistantMessage', () => {
     expect(parsedResponse.message.tool_calls).toContainEqual(
       expect.objectContaining({
         function: {
-          arguments: JSON.stringify({ numbers: [2, 3] }),
+          arguments: { numbers: [2, 3] },
           name: 'sum',
         },
         id: expect.any(String),
@@ -54,7 +54,7 @@ describe('inferToolCallsFromAssistantMessage', () => {
     expect(parsedResponse.message.tool_calls).toContainEqual(
       expect.objectContaining({
         function: {
-          arguments: JSON.stringify({ numbers: [2, 3] }),
+          arguments: { numbers: [2, 3] },
           name: 'sum',
         },
         id: expect.any(String),
