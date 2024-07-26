@@ -4,7 +4,6 @@ import {
   LanguageModelV1CallWarning,
   LanguageModelV1FinishReason,
   LanguageModelV1StreamPart,
-  UnsupportedFunctionalityError,
 } from '@ai-sdk/provider'
 import {
   createJsonResponseHandler,
@@ -140,12 +139,6 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           type,
           warnings,
         }
-      }
-
-      case 'object-grammar': {
-        throw new UnsupportedFunctionalityError({
-          functionality: 'object-grammar mode',
-        })
       }
 
       default: {
