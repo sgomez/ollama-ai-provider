@@ -26,7 +26,7 @@ export interface OllamaAssistantMessage {
 }
 
 export interface OllamaToolMessage {
-  content: unknown
+  content: string
   role: 'tool'
   tool_call_id: string
 }

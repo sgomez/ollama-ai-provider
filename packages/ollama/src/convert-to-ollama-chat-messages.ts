@@ -1,21 +1,16 @@
 import {
-  LanguageModelV1FunctionTool,
   LanguageModelV1Prompt,
   UnsupportedFunctionalityError,
 } from '@ai-sdk/provider'
 import { convertUint8ArrayToBase64 } from '@ai-sdk/provider-utils'
 
 import { injectToolsSchemaIntoSystem } from '@/generate-tool/inject-tools-schema-into-system'
-import { OllamaChatPrompt, OllamaToolMessage } from '@/ollama-chat-prompt'
+import { OllamaChatPrompt } from '@/ollama-chat-prompt'
 
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,
-  tools?: LanguageModelV1FunctionTool[],
-  toolChoice?: string,
 ): OllamaChatPrompt {
   const messages: OllamaChatPrompt = []
-
-  let hasSystem = false
 
   for (const { content, role } of prompt) {
     switch (role) {
@@ -23,12 +18,9 @@ export function convertToOllamaChatMessages(
         messages.push({
           content: injectToolsSchemaIntoSystem({
             system: content,
-            toolChoice,
-            tools,
           }),
           role: 'system',
         })
-        hasSystem = true
         break
       }
 
@@ -80,14 +72,16 @@ export function convertToOllamaChatMessages(
 
       case 'tool': {
         messages.push(
-          ...content.map(
-            (part) =>
-              ({
-                content: part.result,
-                role: 'tool',
-                tool_call_id: part.toolCallId,
-              }) as OllamaToolMessage,
-          ),
+          ...content.map((part) => ({
+            // Non serialized contents are not accepted by ollama, triggering the following error:
+            // "json: cannot unmarshal array into Go struct field ChatRequest.messages of type string"
+            content:
+              typeof part.result === 'object'
+                ? JSON.stringify(part.result)
+                : `${part.result}`,
+            role: 'tool' as const,
+            tool_call_id: part.toolCallId,
+          })),
         )
         break
       }
@@ -97,17 +91,6 @@ export function convertToOllamaChatMessages(
         throw new Error(`Unsupported role: ${_exhaustiveCheck}`)
       }
     }
-  }
-
-  if (!hasSystem && tools) {
-    messages.unshift({
-      content: injectToolsSchemaIntoSystem({
-        system: '',
-        toolChoice,
-        tools,
-      }),
-      role: 'system',
-    })
   }
 
   return messages
