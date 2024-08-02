@@ -28,4 +28,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log(JSON.stringify(result.object, null, 2))
 }
 
-buildProgram('openhermes', main).catch(console.error)
+buildProgram('llama3.1', main).catch(console.error)
