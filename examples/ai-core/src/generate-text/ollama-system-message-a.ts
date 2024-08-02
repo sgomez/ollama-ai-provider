@@ -20,4 +20,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log(result.text)
 }
 
-buildProgram('llama3', main).catch(console.error)
+buildProgram('llama3.1', main).catch(console.error)

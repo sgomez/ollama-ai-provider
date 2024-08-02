@@ -22,4 +22,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log('Finish reason:', await result.finishReason)
 }
 
-buildProgram('llama3', main).catch(console.error)
+buildProgram('llama3.1', main).catch(console.error)

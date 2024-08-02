@@ -30,4 +30,4 @@ async function main(model: OllamaChatModelId) {
   console.log(JSON.stringify(result.object, null, 2))
 }
 
-buildProgram('mistral', main).catch(console.error)
+buildProgram('llama3.1', main).catch(console.error)
