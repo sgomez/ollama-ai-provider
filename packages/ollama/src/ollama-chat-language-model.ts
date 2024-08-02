@@ -4,7 +4,6 @@ import {
   LanguageModelV1CallWarning,
   LanguageModelV1FinishReason,
   LanguageModelV1StreamPart,
-  UnsupportedFunctionalityError,
 } from '@ai-sdk/provider'
 import {
   createJsonResponseHandler,
@@ -85,7 +84,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         return {
           args: {
             ...baseArguments,
-            messages: convertToOllamaChatMessages(prompt, tools),
+            messages: convertToOllamaChatMessages(prompt),
             tools: tools?.map((tool) => ({
               function: {
                 description: tool.description,
@@ -117,11 +116,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           args: {
             ...baseArguments,
             format: 'json',
-            messages: convertToOllamaChatMessages(
-              prompt,
-              [mode.tool],
-              mode.tool.name,
-            ),
+            messages: convertToOllamaChatMessages(prompt),
             tool_choice: {
               function: { name: mode.tool.name },
               type: 'function',
@@ -140,12 +135,6 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           type,
           warnings,
         }
-      }
-
-      case 'object-grammar': {
-        throw new UnsupportedFunctionalityError({
-          functionality: 'object-grammar mode',
-        })
       }
 
       default: {
@@ -184,7 +173,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       rawResponse: { headers: responseHeaders },
       text: response.message.content ?? undefined,
       toolCalls: response.message.tool_calls?.map((toolCall) => ({
-        args: toolCall.function.arguments,
+        args: JSON.stringify(toolCall.function.arguments),
         toolCallId: generateId(),
         toolCallType: 'function',
         toolName: toolCall.function.name,
@@ -294,7 +283,7 @@ const ollamaChatResponseSchema = z.object({
       .array(
         z.object({
           function: z.object({
-            arguments: z.string(),
+            arguments: z.record(z.any()),
             name: z.string(),
           }),
         }),

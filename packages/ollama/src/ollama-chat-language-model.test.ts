@@ -90,6 +90,7 @@ describe('goGenerate', () => {
     })
 
     expect(rawResponse?.headers).toStrictEqual({
+      'content-length': '269',
       // default headers:
       'content-type': 'application/json',
 

@@ -1,5 +1,4 @@
 import {
-  LanguageModelV1FunctionTool,
   LanguageModelV1Prompt,
   UnsupportedFunctionalityError,
 } from '@ai-sdk/provider'
@@ -10,12 +9,8 @@ import { OllamaChatPrompt } from '@/ollama-chat-prompt'
 
 export function convertToOllamaChatMessages(
   prompt: LanguageModelV1Prompt,
-  tools?: LanguageModelV1FunctionTool[],
-  toolChoice?: string,
 ): OllamaChatPrompt {
   const messages: OllamaChatPrompt = []
-
-  let hasSystem = false
 
   for (const { content, role } of prompt) {
     switch (role) {
@@ -23,12 +18,9 @@ export function convertToOllamaChatMessages(
         messages.push({
           content: injectToolsSchemaIntoSystem({
             system: content,
-            toolChoice,
-            tools,
           }),
           role: 'system',
         })
-        hasSystem = true
         break
       }
 
@@ -78,22 +70,27 @@ export function convertToOllamaChatMessages(
         break
       }
 
+      case 'tool': {
+        messages.push(
+          ...content.map((part) => ({
+            // Non serialized contents are not accepted by ollama, triggering the following error:
+            // "json: cannot unmarshal array into Go struct field ChatRequest.messages of type string"
+            content:
+              typeof part.result === 'object'
+                ? JSON.stringify(part.result)
+                : `${part.result}`,
+            role: 'tool' as const,
+            tool_call_id: part.toolCallId,
+          })),
+        )
+        break
+      }
+
       default: {
         const _exhaustiveCheck: string = role
         throw new Error(`Unsupported role: ${_exhaustiveCheck}`)
       }
     }
-  }
-
-  if (!hasSystem && tools) {
-    messages.unshift({
-      content: injectToolsSchemaIntoSystem({
-        system: '',
-        toolChoice,
-        tools,
-      }),
-      role: 'system',
-    })
   }
 
   return messages

@@ -26,6 +26,46 @@ describe('convertToOllamaChatMessages', () => {
         content: [{ text: 'Assistant text message', type: 'text' }],
         role: 'assistant',
       },
+      {
+        content: [
+          { text: "What's the weather like today in Paris?", type: 'text' },
+        ],
+        role: 'user',
+      },
+      {
+        content: [
+          {
+            args: {
+              format: 'celsius',
+              location: 'Paris, France',
+            },
+            toolCallId: '89a1e453-0bce-4de3-a456-c54bed09c520',
+            toolName: 'get_current_weather',
+            type: 'tool-call',
+          },
+        ],
+        role: 'assistant',
+      },
+      {
+        content: [
+          {
+            result: '22',
+            toolCallId: '89a1e453-0bce-4de3-a456-c54bed09c520',
+            toolName: 'get_current_weather',
+            type: 'tool-result',
+          },
+        ],
+        role: 'tool',
+      },
+      {
+        content: [
+          {
+            text: 'The current temperature in Paris, France is 22 degrees Celsius.',
+            type: 'text',
+          },
+        ],
+        role: 'assistant',
+      },
     ]
 
     // Act
@@ -43,6 +83,25 @@ describe('convertToOllamaChatMessages', () => {
         role: 'user',
       },
       { content: 'Assistant text message', role: 'assistant' },
+      // Tool related messages based on: https://github.com/ollama/ollama/blob/f5e3939220e9cd3d7a636708bc9df031ebfd4854/server/testdata/tools/messages.json
+      {
+        content: "What's the weather like today in Paris?",
+        role: 'user',
+      },
+      {
+        content: '',
+        role: 'assistant',
+      },
+      {
+        content: '22',
+        role: 'tool',
+        tool_call_id: '89a1e453-0bce-4de3-a456-c54bed09c520',
+      },
+      {
+        content:
+          'The current temperature in Paris, France is 22 degrees Celsius.',
+        role: 'assistant',
+      },
     ]
     expect(result).toEqual(expectedResult)
   })

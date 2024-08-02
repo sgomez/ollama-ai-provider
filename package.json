@@ -8,7 +8,7 @@
     "prepare": "husky",
     "lint": "pnpm --filter ollama-ai-provider run lint",
     "type-check": "pnpm --filter ollama-ai-provider run type-check",
-    "prettier-check": "pnpm --filter ollama-ai-provider run prettier",
+    "prettier-check": "pnpm --filter ollama-ai-provider run prettier-check",
     "test": "pnpm --filter ollama-ai-provider run test",
     "ci:release": "pnpm clean && pnpm build && changeset publish",
     "ci:version": "changeset version && pnpm install --no-frozen-lockfile"

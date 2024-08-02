@@ -22,48 +22,47 @@ describe('InferToolCallsFromStream', () => {
     vi.resetAllMocks()
   })
 
-  describe.each<CallModeType[]>([
-    ['object-json'],
-    ['object-grammar'],
-    ['regular'],
-  ])('should ignore no tooling %s mode types', (type) => {
-    it('should return is not a call stream', () => {
-      // Arrange
-      const inferToolCallsFromStream = new InferToolCallsFromStream({
-        type,
-      })
-      const delta = 'Hi!'
+  describe.each<CallModeType[]>([['object-json'], ['regular']])(
+    'should ignore no tooling %s mode types',
+    (type) => {
+      it('should return is not a call stream', () => {
+        // Arrange
+        const inferToolCallsFromStream = new InferToolCallsFromStream({
+          type,
+        })
+        const delta = 'Hi!'
 
-      // Act
-      const isToolCallStream = inferToolCallsFromStream.parse({
-        controller,
-        delta,
-      })
+        // Act
+        const isToolCallStream = inferToolCallsFromStream.parse({
+          controller,
+          delta,
+        })
 
-      // Assert
-      expect(isToolCallStream).toBeFalsy()
-      expect(inferToolCallsFromStream.detectedToolCall).toBeFalsy()
-      expect(controller.enqueue).not.toBeCalled()
-    })
-
-    it('should return stop finish reason', () => {
-      // Arrange
-      const inferToolCallsFromStream = new InferToolCallsFromStream({
-        type,
-      })
-      const delta = 'Hi!'
-
-      // Act
-      inferToolCallsFromStream.parse({
-        controller,
-        delta,
+        // Assert
+        expect(isToolCallStream).toBeFalsy()
+        expect(inferToolCallsFromStream.detectedToolCall).toBeFalsy()
+        expect(controller.enqueue).not.toBeCalled()
       })
 
-      // Assert
-      expect(inferToolCallsFromStream.finish({ controller })).toEqual('stop')
-      expect(controller.enqueue).not.toBeCalled()
-    })
-  })
+      it('should return stop finish reason', () => {
+        // Arrange
+        const inferToolCallsFromStream = new InferToolCallsFromStream({
+          type,
+        })
+        const delta = 'Hi!'
+
+        // Act
+        inferToolCallsFromStream.parse({
+          controller,
+          delta,
+        })
+
+        // Assert
+        expect(inferToolCallsFromStream.finish({ controller })).toEqual('stop')
+        expect(controller.enqueue).not.toBeCalled()
+      })
+    },
+  )
 
   describe('should parse object-tool mode calls', () => {
     it('should detect is a tool call stream', () => {

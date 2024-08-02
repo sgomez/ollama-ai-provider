@@ -100,11 +100,11 @@ importers:
   packages/ollama:
     dependencies:
       '@ai-sdk/provider':
-        specifier: 0.0.11
-        version: 0.0.11
+        specifier: 0.0.14
+        version: 0.0.14
       '@ai-sdk/provider-utils':
-        specifier: 1.0.0
-        version: 1.0.0(zod@3.22.4)
+        specifier: 1.0.5
+        version: 1.0.5(zod@3.22.4)
       partial-json:
         specifier: ^0.1.7
         version: 0.1.7
@@ -136,8 +136,21 @@ packages:
       zod:
         optional: true
 
+  '@ai-sdk/provider-utils@1.0.5':
+    resolution: {integrity: sha512-XfOawxk95X3S43arn2iQIFyWGMi0DTxsf9ETc6t7bh91RPWOOPYN1tsmS5MTKD33OGJeaDQ/gnVRzXUCRBrckQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+
   '@ai-sdk/provider@0.0.11':
     resolution: {integrity: sha512-VTipPQ92Moa5Ovg/nZIc8yNoIFfukZjUHZcQMduJbiUh3CLQyrBAKTEV9AwjPy8wgVxj3+GZjon0yyOJKhfp5g==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@0.0.14':
+    resolution: {integrity: sha512-gaQ5Y033nro9iX1YUjEDFDRhmMcEiCk56LJdIUbX5ozEiCNCfpiBpEqrjSp/Gp5RzBS2W0BVxfG7UGW6Ezcrzg==}
     engines: {node: '>=18'}
 
   '@ai-sdk/react@0.0.15':
@@ -3143,7 +3156,20 @@ snapshots:
     optionalDependencies:
       zod: 3.22.4
 
+  '@ai-sdk/provider-utils@1.0.5(zod@3.22.4)':
+    dependencies:
+      '@ai-sdk/provider': 0.0.14
+      eventsource-parser: 1.1.2
+      nanoid: 3.3.6
+      secure-json-parse: 2.7.0
+    optionalDependencies:
+      zod: 3.22.4
+
   '@ai-sdk/provider@0.0.11':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/provider@0.0.14':
     dependencies:
       json-schema: 0.4.0
 
