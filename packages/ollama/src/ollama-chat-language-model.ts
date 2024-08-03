@@ -3,6 +3,7 @@ import {
   LanguageModelV1,
   LanguageModelV1CallWarning,
   LanguageModelV1FinishReason,
+  LanguageModelV1FunctionToolCall,
   LanguageModelV1StreamPart,
 } from '@ai-sdk/provider'
 import {
@@ -168,17 +169,23 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     const { messages: rawPrompt, ...rawSettings } = args
 
+    const toolCalls: LanguageModelV1FunctionToolCall[] | undefined =
+      response.message.tool_calls?.map((toolCall) => ({
+        args: JSON.stringify(toolCall.function.arguments),
+        toolCallId: toolCall.id ?? generateId(),
+        toolCallType: 'function',
+        toolName: toolCall.function.name,
+      }))
+
     return {
-      finishReason: mapOllamaFinishReason(response.finish_reason),
+      finishReason: mapOllamaFinishReason({
+        finishReason: response.done_reason,
+        hasToolCalls: toolCalls !== undefined && toolCalls.length > 0,
+      }),
       rawCall: { rawPrompt, rawSettings },
       rawResponse: { headers: responseHeaders },
       text: response.message.content ?? undefined,
-      toolCalls: response.message.tool_calls?.map((toolCall) => ({
-        args: JSON.stringify(toolCall.function.arguments),
-        toolCallId: generateId(),
-        toolCallType: 'function',
-        toolName: toolCall.function.name,
-      })),
+      toolCalls,
       usage: {
         completionTokens: response.eval_count || 0,
         promptTokens: response.prompt_eval_count || 0,
@@ -273,9 +280,9 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 const ollamaChatResponseSchema = z.object({
   created_at: z.string(),
   done: z.literal(true),
+  done_reason: z.string().optional().nullable(),
   eval_count: z.number(),
   eval_duration: z.number(),
-  finish_reason: z.string().optional().nullable(),
   load_duration: z.number().optional(),
   message: z.object({
     content: z.string(),
@@ -287,6 +294,7 @@ const ollamaChatResponseSchema = z.object({
             arguments: z.record(z.any()),
             name: z.string(),
           }),
+          id: z.string().optional(),
         }),
       )
       .optional()

@@ -1,12 +1,15 @@
 import { LanguageModelV1FinishReason } from '@ai-sdk/provider'
 
-export function mapOllamaFinishReason(
-  finishReason: string | null | undefined,
-): LanguageModelV1FinishReason {
+export function mapOllamaFinishReason({
+  finishReason,
+  hasToolCalls,
+}: {
+  finishReason: string | null | undefined
+  hasToolCalls: boolean
+}): LanguageModelV1FinishReason {
   switch (finishReason) {
-    case 'stop':
-    case 'tool-calls': {
-      return finishReason
+    case 'stop': {
+      return hasToolCalls ? 'tool-calls' : 'stop'
     }
     default: {
       return 'other'
