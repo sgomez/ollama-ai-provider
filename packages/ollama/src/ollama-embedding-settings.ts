@@ -17,4 +17,5 @@ export type OllamaEmbeddingModelId =
 
 export interface OllamaEmbeddingSettings {
   maxEmbeddingsPerCall?: number
+  truncate?: boolean
 }

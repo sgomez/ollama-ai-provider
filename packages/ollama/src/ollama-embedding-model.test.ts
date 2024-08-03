@@ -3,24 +3,28 @@ import { JsonTestServer } from '@ai-sdk/provider-utils/test'
 
 import { createOllama } from './ollama-provider'
 
-const dummyEmbeddings = [0.1, 0.2, 0.3, 0.4, 0.5]
-const testValues = ['sunny day at the beach']
+const dummyEmbeddings = [
+  [0.1, 0.2, 0.3, 0.4, 0.5],
+  [0.6, 0.7, 0.8, 0.9, 1],
+]
+const testValues = ['sunny day at the beach', 'rainy day in the city']
 
 const provider = createOllama({})
 const model = provider.embedding('all-minilm')
 
 describe('doEmbed', () => {
-  const server = new JsonTestServer('http://127.0.0.1:11434/api/embeddings')
+  const server = new JsonTestServer('http://127.0.0.1:11434/api/embed')
 
   server.setupTestEnvironment()
 
   function prepareJsonResponse({
-    embedding = dummyEmbeddings,
+    embeddings = dummyEmbeddings,
   }: {
-    embedding?: EmbeddingModelV1Embedding
+    embeddings?: EmbeddingModelV1Embedding[]
   } = {}) {
     server.responseBodyJson = {
-      embedding,
+      embeddings,
+      model: 'all-minilm',
     }
   }
 
@@ -29,7 +33,7 @@ describe('doEmbed', () => {
 
     const { embeddings } = await model.doEmbed({ values: testValues })
 
-    expect(embeddings).toStrictEqual([dummyEmbeddings])
+    expect(embeddings).toStrictEqual(dummyEmbeddings)
   })
 
   it('should expose the raw response headers', async () => {
@@ -42,7 +46,7 @@ describe('doEmbed', () => {
     const { rawResponse } = await model.doEmbed({ values: testValues })
 
     expect(rawResponse?.headers).toStrictEqual({
-      'content-length': '35',
+      'content-length': '79',
       // default headers:
       'content-type': 'application/json',
 
@@ -57,8 +61,8 @@ describe('doEmbed', () => {
     await model.doEmbed({ values: testValues })
 
     expect(await server.getRequestBodyJson()).toStrictEqual({
+      input: testValues,
       model: 'all-minilm',
-      prompt: testValues[0],
     })
   })
 
