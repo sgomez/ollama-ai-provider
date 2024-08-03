@@ -1,6 +1,6 @@
 {
   "name": "ollama-ai-provider",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Vercel AI Provider for running LLMs locally using Ollama",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
