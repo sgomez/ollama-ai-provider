@@ -75,7 +75,7 @@ generate-object_ollama-tool:
 generate-text: generate-text-run generate-text-all
 generate-text-run:
 	echo - examples/generate-text:
-generate-text-all: generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-custom-headers generate-text_ollama-custom-fetch
+generate-text-all: generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-multimodal-url generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-custom-headers generate-text_ollama-custom-fetch
 generate-text_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-completion:
@@ -90,7 +90,7 @@ generate-text_ollama-multimodal:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-multimodal-base64:
 	$(call RUN_EXAMPLE_TARGET,$@)
-generate-text_ollama-multimodal-url: # manual, not supported
+generate-text_ollama-multimodal-url:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-system-message-a:
 	$(call RUN_EXAMPLE_TARGET,$@)

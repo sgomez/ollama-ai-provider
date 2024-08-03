@@ -31,6 +31,7 @@ interface OllamaChatConfig {
 export class OllamaChatLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = 'v1'
   readonly defaultObjectGenerationMode = 'json'
+  readonly supportsImageUrls = false
 
   constructor(
     public readonly modelId: OllamaChatModelId,
