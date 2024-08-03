@@ -1,5 +1,15 @@
 # ollama-ai-provider
 
+## 0.11.0
+
+### Minor Changes
+
+- add native ollama tool support
+
+## 0.10.0
+
+- fix stream split lines
+
 ## 0.9.1
 
 ### Patch Changes
