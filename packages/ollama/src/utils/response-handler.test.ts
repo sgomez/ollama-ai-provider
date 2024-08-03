@@ -1,9 +1,8 @@
-import { z } from 'zod'
-
 import {
   convertArrayToReadableStream,
   convertReadableStreamToArray,
-} from '@/test'
+} from '@ai-sdk/provider-utils/test'
+import { z } from 'zod'
 
 import { createJsonStreamResponseHandler } from './response-handler'
 
