@@ -67,9 +67,9 @@ on the model used and the schema used.
 
 At least it has been tested with the following features:
 
-| Image input        | Object generation  | Tool usage | Tool streaming |
-|--------------------|--------------------|------------|----------------|
-| :white_check_mark: | :white_check_mark: | :warning:  | :warning:      | 
+| Image input        | Object generation  | Tool usage         | Tool streaming |
+|--------------------|--------------------|--------------------|----------------|
+| :white_check_mark: | :white_check_mark: | :white_check_mark: | :warning:      | 
 
 ### Image input
 
@@ -79,6 +79,8 @@ You need to use any model with visual understanding. These are tested:
 * llava-llama3
 * llava-phi3
 * moondream
+
+Ollama does not support URLs, but the ai-sdk is able to download the file and send it to the model.
 
 ### Object generation
 
@@ -98,25 +100,18 @@ Remember that Ollama and this module are free software, so be patient.
 
 ### Tool usage (no streaming)
 
-> This feature is not completed and unstable
+Ollama has introduced support for tooling, enabling models to interact with external tools more seamlessly. Please, see the [list of models with tooling support](https://ollama.com/search?c=tools) in the Ollama site.
 
-Ollama does not support tooling, so this provider simulates tool usage with prompt injection. That means that
-this feature can fail very often. Again, it depends on the model you use, and it is very related to the object
-generation issues explained in the previous section.
+Caveats:
 
-I recommend you use `openhermes` and `mistral` or experiment with your preferred models.
-
+1. Object-tool mode may not work with certain models.
+2. Errors may still occur due to model limitations, tool integration issues, or other factors. Unfortunately, they may be inherent to the model’s design or implementation, and there may not be a way to resolve them fully
 
 ### Tool streaming
 
 > This feature is not completed and unstable
 
-Again, since Ollama does not support tooling, we should simulate the feature. In this case, the problem is worse than
-in non-streaming tool usage. We don't have the full response before knowing if the model has detected function calling.
-We are waiting for the first characters before sending the deltas to detect if we are in a tool call flow.
-
-Obviously, this is very buggy and should be used with caution. Right now, you cannot use it in chats and with more than
-one tool.
+Ollama tooling does not support it in streams, but this provider can detect tool responses.
 
 ### Intercepting Fetch Requests
 
