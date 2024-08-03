@@ -28,7 +28,7 @@
   "dependencies": {
     "@ai-sdk/provider": "0.0.14",
     "@ai-sdk/provider-utils": "1.0.5",
-    "partial-json": "^0.1.7"
+    "partial-json": "0.1.7"
   },
   "devDependencies": {
     "@edge-runtime/vm": "^3.2.0",
