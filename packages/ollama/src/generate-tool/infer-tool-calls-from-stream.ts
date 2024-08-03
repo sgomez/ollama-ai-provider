@@ -61,7 +61,7 @@ export class InferToolCallsFromStream {
     }
 
     for (const [index, parsedFunction] of parsedFunctions.entries()) {
-      const parsedArguments = JSON.stringify(parsedFunction?.arguments) ?? ''
+      const parsedArguments = JSON.stringify(parsedFunction?.parameters) ?? ''
 
       if (parsedArguments === '') {
         continue

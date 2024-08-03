@@ -116,6 +116,10 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
           args: {
             ...baseArguments,
             messages: convertToOllamaChatMessages(prompt),
+            tool_choice: {
+              function: { name: mode.tool.name },
+              type: 'function',
+            },
             tools: [
               {
                 function: {
@@ -240,7 +244,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
               finishReason = inferToolCallsFromStream.finish({ controller })
               usage = {
                 completionTokens: value.eval_count,
-                promptTokens: Number.NaN,
+                promptTokens: value.prompt_eval_count || 0,
               }
 
               return

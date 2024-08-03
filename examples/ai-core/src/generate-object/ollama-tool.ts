@@ -7,6 +7,10 @@ import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 
+console.log(
+  'Probably object-tool is not working as expected with ollama tools, depends of the model capabilities',
+)
+
 async function main(model: OllamaChatModelId) {
   const result = await generateObject({
     maxTokens: 2000,

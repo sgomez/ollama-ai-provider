@@ -6,6 +6,10 @@ import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 
+console.log(
+  'Probably object-tool is not working as expected with ollama tools, depends of the model capabilities',
+)
+
 async function main(model: Parameters<typeof ollama>[0]) {
   const result = await streamObject({
     maxTokens: 2000,
