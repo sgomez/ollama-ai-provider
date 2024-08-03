@@ -32,7 +32,7 @@ export class OllamaEmbeddingModel implements EmbeddingModelV1<string> {
   }
 
   get maxEmbeddingsPerCall(): number {
-    return this.settings.maxEmbeddingsPerCall ?? 1
+    return this.settings.maxEmbeddingsPerCall ?? 2048
   }
 
   get supportsParallelCalls(): boolean {
@@ -70,30 +70,28 @@ export class OllamaEmbeddingModel implements EmbeddingModelV1<string> {
         rawResponse: { headers: {} },
       }
 
-    for (const value of values) {
-      const { responseHeaders, value: response } = await postJsonToApi({
-        abortSignal,
-        body: {
-          model: this.modelId,
-          prompt: value,
-        },
-        failedResponseHandler: ollamaFailedResponseHandler,
-        fetch: this.config.fetch,
-        headers: this.config.headers(),
-        successfulResponseHandler: createJsonResponseHandler(
-          ollamaTextEmbeddingResponseSchema,
-        ),
-        url: `${this.config.baseURL}/embeddings`,
-      })
+    const { responseHeaders, value: response } = await postJsonToApi({
+      abortSignal,
+      body: {
+        input: values,
+        model: this.modelId,
+      },
+      failedResponseHandler: ollamaFailedResponseHandler,
+      fetch: this.config.fetch,
+      headers: this.config.headers(),
+      successfulResponseHandler: createJsonResponseHandler(
+        ollamaTextEmbeddingResponseSchema,
+      ),
+      url: `${this.config.baseURL}/embed`,
+    })
 
-      embeddings.embeddings.push(response.embedding)
-      embeddings.rawResponse = { headers: responseHeaders }
-    }
+    embeddings.embeddings = response.embeddings
+    embeddings.rawResponse = { headers: responseHeaders }
 
     return embeddings
   }
 }
 
 const ollamaTextEmbeddingResponseSchema = z.object({
-  embedding: z.array(z.number()),
+  embeddings: z.array(z.array(z.number())),
 })
