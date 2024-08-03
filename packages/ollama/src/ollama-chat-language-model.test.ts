@@ -345,7 +345,7 @@ describe('doStream', () => {
       {
         finishReason: 'stop',
         type: 'finish',
-        usage: { completionTokens: 290, promptTokens: Number.NaN },
+        usage: { completionTokens: 290, promptTokens: 26 },
       },
     ])
   })
@@ -356,8 +356,8 @@ describe('doStream', () => {
     server.responseChunks = [
       `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"name\\":"},"done":false}\n`,
       `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"json\\","},"done":false}\n`,
-      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"argum"},"done":false}\n`,
-      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ents\\":"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"param"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"eters\\":"},"done":false}\n`,
       `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"numb"},"done":false}\n`,
       `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ers\\":"},"done":false}\n`,
       `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"[1,2]}"},"done":false}\n`,
@@ -427,7 +427,7 @@ describe('doStream', () => {
         type: 'finish',
         usage: {
           completionTokens: 10,
-          promptTokens: Number.NaN,
+          promptTokens: 10,
         },
       },
     ])

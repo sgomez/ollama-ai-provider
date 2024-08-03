@@ -104,7 +104,7 @@ describe('InferToolCallsFromStream', () => {
       const inferToolCallsFromStream = new InferToolCallsFromStream({
         type: 'object-tool',
       })
-      const deltas = ['{ "name":', '"json"', ', "arguments": {']
+      const deltas = ['{ "name":', '"json"', ', "parameters": {']
 
       // Act
       deltas.map((delta: string) =>
@@ -132,7 +132,7 @@ describe('InferToolCallsFromStream', () => {
       const deltas = [
         '{"name":',
         '"json"',
-        ',"arguments":{',
+        ',"parameters":{',
         '"foo":"bar"',
         '}',
         '}',
@@ -158,7 +158,7 @@ describe('InferToolCallsFromStream', () => {
       const deltas = [
         '{"name":',
         '"json"',
-        ',"arguments":{',
+        ',"parameters":{',
         '"foo":"bar"',
         '}',
         '}',
