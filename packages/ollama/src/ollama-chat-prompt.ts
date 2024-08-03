@@ -33,7 +33,7 @@ export interface OllamaToolMessage {
 
 export interface MessageToolCall {
   function: {
-    arguments: string
+    arguments: object
     name: string
   }
   id: string
