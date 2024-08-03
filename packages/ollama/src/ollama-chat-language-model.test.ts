@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
-
 import { LanguageModelV1Prompt } from '@ai-sdk/provider'
 import {
-  convertStreamToArray,
+  convertReadableStreamToArray,
   JsonTestServer,
   StreamingTestServer,
 } from '@ai-sdk/provider-utils/test'
@@ -15,32 +13,52 @@ const TEST_PROMPT: LanguageModelV1Prompt = [
 ]
 
 const provider = createOllama()
-const model = provider.chat('llama3')
 
-describe('goGenerate', () => {
+const model = provider.chat('model')
+
+describe('doGenerate', () => {
   const server = new JsonTestServer('http://127.0.0.1:11434/api/chat')
 
   server.setupTestEnvironment()
 
   function prepareJsonResponse({
     content = '',
-    usage = { eval_count: 290, prompt_eval_count: 26 },
+    done_reason = 'stop',
+    tool_calls,
+    usage = {
+      completion_tokens: 30,
+      prompt_tokens: 4,
+    },
   }: {
-    content: string
-    usage?: { eval_count: number; prompt_eval_count: number }
-  }) {
+    content?: string
+    done_reason?: string
+    tool_calls?: Array<{
+      function: {
+        arguments: Record<string, unknown>
+        name: string
+      }
+      id: string
+      type: 'function'
+    }>
+    usage?: {
+      completion_tokens: number
+      prompt_tokens: number
+    }
+  } = {}) {
     server.responseBodyJson = {
       created_at: '2023-08-04T19:22:45.499127Z',
       done: true,
-      eval_count: usage.eval_count,
+      done_reason,
+      eval_count: usage.completion_tokens,
       eval_duration: 4_709_213_000,
       load_duration: 5_025_959,
       message: {
         content,
         role: 'assistant',
+        tool_calls,
       },
-      model: 'llama3',
-      prompt_eval_count: usage.prompt_eval_count,
+      model: 'model',
+      prompt_eval_count: usage.prompt_tokens,
       prompt_eval_duration: 325_953_000,
       total_duration: 5_043_500_667,
     }
@@ -60,8 +78,8 @@ describe('goGenerate', () => {
 
   it('should extract usage', async () => {
     prepareJsonResponse({
-      content: 'Hello, World!',
-      usage: { eval_count: 20, prompt_eval_count: 25 },
+      content: '',
+      usage: { completion_tokens: 5, prompt_tokens: 20 },
     })
 
     const { usage } = await model.doGenerate({
@@ -71,9 +89,39 @@ describe('goGenerate', () => {
     })
 
     expect(usage).toStrictEqual({
-      completionTokens: 20,
-      promptTokens: 25,
+      completionTokens: 5,
+      promptTokens: 20,
     })
+  })
+
+  it('should extract finish reason', async () => {
+    prepareJsonResponse({
+      content: '',
+      done_reason: 'stop',
+    })
+
+    const response = await model.doGenerate({
+      inputFormat: 'prompt',
+      mode: { type: 'regular' },
+      prompt: TEST_PROMPT,
+    })
+
+    expect(response.finishReason).toStrictEqual('stop')
+  })
+
+  it('should support unknown finish reason', async () => {
+    prepareJsonResponse({
+      content: '',
+      done_reason: 'eos',
+    })
+
+    const response = await model.doGenerate({
+      inputFormat: 'prompt',
+      mode: { type: 'regular' },
+      prompt: TEST_PROMPT,
+    })
+
+    expect(response.finishReason).toStrictEqual('other')
   })
 
   it('should expose the raw response headers', async () => {
@@ -90,8 +138,8 @@ describe('goGenerate', () => {
     })
 
     expect(rawResponse?.headers).toStrictEqual({
-      'content-length': '269',
       // default headers:
+      'content-length': '287',
       'content-type': 'application/json',
 
       // custom header
@@ -99,7 +147,7 @@ describe('goGenerate', () => {
     })
   })
 
-  it('should pass the model and the prompt', async () => {
+  it('should pass the model and the messages', async () => {
     prepareJsonResponse({ content: '' })
 
     await model.doGenerate({
@@ -110,22 +158,95 @@ describe('goGenerate', () => {
 
     expect(await server.getRequestBodyJson()).toStrictEqual({
       messages: [{ content: 'Hello', role: 'user' }],
-      model: 'llama3',
+      model: 'model',
       options: {},
       stream: false,
     })
   })
 
-  it('should pass custom headers', async () => {
+  it('should pass settings', async () => {
+    prepareJsonResponse()
+
+    await provider
+      .chat('model', {
+        topK: 1,
+      })
+      .doGenerate({
+        inputFormat: 'prompt',
+        mode: { type: 'regular' },
+        prompt: TEST_PROMPT,
+      })
+
+    expect(await server.getRequestBodyJson()).toStrictEqual({
+      messages: [{ content: 'Hello', role: 'user' }],
+      model: 'model',
+      options: {
+        top_k: 1,
+      },
+      stream: false,
+    })
+  })
+
+  it('should pass tools', async () => {
     prepareJsonResponse({ content: '' })
 
-    const customProvider = createOllama({
+    await model.doGenerate({
+      inputFormat: 'prompt',
+      mode: {
+        tools: [
+          {
+            name: 'test-tool',
+            parameters: {
+              $schema: 'http://json-schema.org/draft-07/schema#',
+              additionalProperties: false,
+              properties: { value: { type: 'string' } },
+              required: ['value'],
+              type: 'object',
+            },
+            type: 'function',
+          },
+        ],
+        type: 'regular',
+      },
+      prompt: TEST_PROMPT,
+    })
+
+    expect(await server.getRequestBodyJson()).toStrictEqual({
+      messages: [{ content: 'Hello', role: 'user' }],
+      model: 'model',
+      options: {},
+      stream: false,
+      tools: [
+        {
+          function: {
+            name: 'test-tool',
+            parameters: {
+              $schema: 'http://json-schema.org/draft-07/schema#',
+              additionalProperties: false,
+              properties: { value: { type: 'string' } },
+              required: ['value'],
+              type: 'object',
+            },
+          },
+          type: 'function',
+        },
+      ],
+    })
+  })
+
+  it('should pass headers', async () => {
+    prepareJsonResponse({ content: '' })
+
+    const providerWithHeaders = createOllama({
       headers: {
-        'Custom-Header': 'test-header',
+        'Custom-Provider-Header': 'provider-header-value',
       },
     })
 
-    await customProvider.chat('gpt-3.5-turbo-instruct').doGenerate({
+    await providerWithHeaders.chat('gpt-3.5-turbo').doGenerate({
+      headers: {
+        'Custom-Request-Header': 'request-header-value',
+      },
       inputFormat: 'prompt',
       mode: { type: 'regular' },
       prompt: TEST_PROMPT,
@@ -135,8 +256,53 @@ describe('goGenerate', () => {
 
     expect(requestHeaders).toStrictEqual({
       'content-type': 'application/json',
-      'custom-header': 'test-header',
+      'custom-provider-header': 'provider-header-value',
     })
+  })
+
+  it('should parse tool results', async () => {
+    prepareJsonResponse({
+      tool_calls: [
+        {
+          function: {
+            arguments: { value: 'Spark' },
+            name: 'test-tool',
+          },
+          id: 'call_O17Uplv4lJvD6DVdIvFFeRMw',
+          type: 'function',
+        },
+      ],
+    })
+
+    const result = await model.doGenerate({
+      inputFormat: 'prompt',
+      mode: {
+        tools: [
+          {
+            name: 'test-tool',
+            parameters: {
+              $schema: 'http://json-schema.org/draft-07/schema#',
+              additionalProperties: false,
+              properties: { value: { type: 'string' } },
+              required: ['value'],
+              type: 'object',
+            },
+            type: 'function',
+          },
+        ],
+        type: 'regular',
+      },
+      prompt: TEST_PROMPT,
+    })
+
+    expect(result.toolCalls).toStrictEqual([
+      {
+        args: '{"value":"Spark"}',
+        toolCallId: 'call_O17Uplv4lJvD6DVdIvFFeRMw',
+        toolCallType: 'function',
+        toolName: 'test-tool',
+      },
+    ])
   })
 })
 
@@ -154,9 +320,9 @@ describe('doStream', () => {
   }) {
     server.responseChunks = [
       ...content.map((text) => {
-        return `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"${text}"},"done":false}\n`
+        return `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"${text}"},"done":false}\n`
       }),
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.137913Z","message":{"role":"assistant","content":""},"done":true,"total_duration":1820013000,"load_duration":5921416,"prompt_eval_count":${usage.prompt_eval_count},"prompt_eval_duration":1750224000,"eval_count":${usage.eval_count},"eval_duration":60669000}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.137913Z","message":{"role":"assistant","content":""},"done":true,"total_duration":1820013000,"load_duration":5921416,"prompt_eval_count":${usage.prompt_eval_count},"prompt_eval_duration":1750224000,"eval_count":${usage.eval_count},"eval_duration":60669000}\n`,
     ]
   }
 
@@ -172,7 +338,7 @@ describe('doStream', () => {
       prompt: TEST_PROMPT,
     })
 
-    expect(await convertStreamToArray(stream)).toStrictEqual([
+    expect(await convertReadableStreamToArray(stream)).toStrictEqual([
       { textDelta: 'Hello', type: 'text-delta' },
       { textDelta: ', ', type: 'text-delta' },
       { textDelta: 'World!', type: 'text-delta' },
@@ -188,15 +354,15 @@ describe('doStream', () => {
     // Arrange
 
     server.responseChunks = [
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"name\\":"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"json\\","},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"argum"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ents\\":"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"numb"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ers\\":"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"[1,2]}"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"}"},"done":false}\n`,
-      `{"model":"llama3","created_at":"2024-05-04T01:59:32.137913Z","message":{"role":"assistant","content":""},"done":true,"total_duration":1820013000,"load_duration":5921416,"prompt_eval_count":10,"prompt_eval_duration":1750224000,"eval_count":10,"eval_duration":60669000}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"name\\":"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"json\\","},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"\\"argum"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ents\\":"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"{\\"numb"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"ers\\":"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"[1,2]}"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.077465Z","message":{"role":"assistant","content":"}"},"done":false}\n`,
+      `{"model":"model","created_at":"2024-05-04T01:59:32.137913Z","message":{"role":"assistant","content":""},"done":true,"total_duration":1820013000,"load_duration":5921416,"prompt_eval_count":10,"prompt_eval_duration":1750224000,"eval_count":10,"eval_duration":60669000}\n`,
     ]
     // Act
     const { stream } = await model.doStream({
@@ -220,7 +386,7 @@ describe('doStream', () => {
     })
 
     // Assert
-    expect(await convertStreamToArray(stream)).toStrictEqual([
+    expect(await convertReadableStreamToArray(stream)).toStrictEqual([
       {
         argsTextDelta: '{"numb',
         toolCallId: expect.any(String),
@@ -302,7 +468,7 @@ describe('doStream', () => {
 
     expect(await server.getRequestBodyJson()).toStrictEqual({
       messages: [{ content: 'Hello', role: 'user' }],
-      model: 'llama3',
+      model: 'model',
       options: {},
     })
   })

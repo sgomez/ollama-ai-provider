@@ -15,7 +15,6 @@ import {
 import { z } from 'zod'
 
 import { convertToOllamaChatMessages } from '@/convert-to-ollama-chat-messages'
-import { inferToolCallsFromResponse } from '@/generate-tool/infer-tool-calls-from-response'
 import { InferToolCallsFromStream } from '@/generate-tool/infer-tool-calls-from-stream'
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
@@ -55,7 +54,6 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     topP,
   }: Parameters<LanguageModelV1['doGenerate']>[0]) {
     const type = mode.type
-
     const warnings: LanguageModelV1CallWarning[] = []
 
     const baseArguments = {
@@ -117,12 +115,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         return {
           args: {
             ...baseArguments,
-            format: 'json',
             messages: convertToOllamaChatMessages(prompt),
-            tool_choice: {
-              function: { name: mode.tool.name },
-              type: 'function',
-            },
             tools: [
               {
                 function: {
@@ -151,7 +144,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   ): Promise<Awaited<ReturnType<LanguageModelV1['doGenerate']>>> {
     const { args, warnings } = this.getArguments(options)
 
-    const { responseHeaders, value } = await postJsonToApi({
+    const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
       body: {
         ...args,
@@ -165,7 +158,6 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       ),
       url: `${this.config.baseURL}/chat`,
     })
-    const response = inferToolCallsFromResponse(value)
 
     const { messages: rawPrompt, ...rawSettings } = args
 
