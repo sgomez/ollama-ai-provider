@@ -169,7 +169,7 @@ describe('doGenerate', () => {
 
     await provider
       .chat('model', {
-        topK: 1,
+        numCtx: 1024,
       })
       .doGenerate({
         inputFormat: 'prompt',
@@ -181,7 +181,7 @@ describe('doGenerate', () => {
       messages: [{ content: 'Hello', role: 'user' }],
       model: 'model',
       options: {
-        top_k: 1,
+        num_ctx: 1024,
       },
       stream: false,
     })

@@ -116,6 +116,8 @@ export interface OllamaChatSettings {
   /**
    * Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return.
    * Multiple stop patterns may be set by specifying multiple separate `stop` parameters in a modelfile.
+   *
+   * @deprecated Use `stopSequences` from AI SDK functions.
    */
   stop?: string
 
@@ -128,6 +130,8 @@ export interface OllamaChatSettings {
   /**
    * Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a
    * lower value (e.g. 10) will be more conservative. (Default: 40)
+   *
+   * @deprecated Use `topK` from AI SDK functions.
    */
   topK?: number
 }

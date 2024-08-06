@@ -50,10 +50,13 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     presencePenalty,
     prompt,
     seed,
+    stopSequences,
     temperature,
+    topK,
     topP,
   }: Parameters<LanguageModelV1['doGenerate']>[0]) {
     const type = mode.type
+
     const warnings: LanguageModelV1CallWarning[] = []
 
     const baseArguments = {
@@ -69,10 +72,10 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         repeat_last_n: this.settings.repeatLastN,
         repeat_penalty: this.settings.repeatPenalty,
         seed,
-        stop: this.settings.stop,
+        stop: this.settings.stop ?? stopSequences,
         temperature,
         tfs_z: this.settings.tfsZ,
-        top_k: this.settings.topK,
+        top_k: this.settings.topK ?? topK,
         top_p: topP,
       }),
     }
