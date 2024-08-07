@@ -113,6 +113,14 @@ Caveats:
 
 Ollama tooling does not support it in streams, but this provider can detect tool responses.
 
+You can disable this experimental feature with `` setting:
+
+```ts
+ollama("model", {
+  experimentalStreamTools: false,
+})
+```
+
 ### Intercepting Fetch Requests
 
 This provider supports [Intercepting Fetch Requests](https://sdk.vercel.ai/examples/providers/intercepting-fetch-requests).
