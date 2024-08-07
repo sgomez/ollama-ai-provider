@@ -1,5 +1,14 @@
 # ollama-ai-provider
 
+## 0.12.0
+
+### Minor Changes
+
+- Update to Vercel AI SDK 3.3
+- Added support to sending custom headers
+- Added support to stopSequences and topK settings
+- Added settings to disable experimental stream tooling 
+
 ## 0.11.0
 
 ### Minor Changes
