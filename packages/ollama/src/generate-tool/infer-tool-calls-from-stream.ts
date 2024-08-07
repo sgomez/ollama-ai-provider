@@ -1,6 +1,7 @@
 import type {
   LanguageModelV1CallOptions,
   LanguageModelV1FinishReason,
+  LanguageModelV1FunctionTool,
   LanguageModelV1StreamPart,
 } from '@ai-sdk/provider'
 import { generateId } from '@ai-sdk/provider-utils'
@@ -20,12 +21,20 @@ export type CallModeType = LanguageModelV1CallOptions['mode']['type']
 export class InferToolCallsFromStream {
   private _firstMessage: boolean
   private readonly _toolCalls: ToolCall[]
+  private _tools?: LanguageModelV1FunctionTool[]
   private _toolPartial: string
   private readonly _type: CallModeType
   private _detectedToolCall: boolean
 
-  constructor({ type }: { type: CallModeType }) {
+  constructor({
+    tools,
+    type,
+  }: {
+    tools: LanguageModelV1FunctionTool[] | undefined
+    type: CallModeType
+  }) {
     this._firstMessage = true
+    this._tools = tools
     this._toolPartial = ''
     this._toolCalls = []
     this._type = type
@@ -112,6 +121,10 @@ export class InferToolCallsFromStream {
   }
 
   private detectToolCall(delta: string) {
+    if (!this._tools || this._tools.length === 0) {
+      return
+    }
+
     if (this._firstMessage) {
       if (this._type === 'object-tool') {
         this._detectedToolCall = true

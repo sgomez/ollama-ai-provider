@@ -28,6 +28,13 @@ describe('InferToolCallsFromStream', () => {
       it('should return is not a call stream', () => {
         // Arrange
         const inferToolCallsFromStream = new InferToolCallsFromStream({
+          tools: [
+            {
+              name: 'json',
+              parameters: {},
+              type: 'function',
+            },
+          ],
           type,
         })
         const delta = 'Hi!'
@@ -47,6 +54,13 @@ describe('InferToolCallsFromStream', () => {
       it('should return stop finish reason', () => {
         // Arrange
         const inferToolCallsFromStream = new InferToolCallsFromStream({
+          tools: [
+            {
+              name: 'json',
+              parameters: {},
+              type: 'function',
+            },
+          ],
           type,
         })
         const delta = 'Hi!'
@@ -68,6 +82,13 @@ describe('InferToolCallsFromStream', () => {
     it('should detect is a tool call stream', () => {
       // Arrange
       const inferToolCallsFromStream = new InferToolCallsFromStream({
+        tools: [
+          {
+            name: 'json',
+            parameters: {},
+            type: 'function',
+          },
+        ],
         type: 'object-tool',
       })
       const delta = '{'
@@ -85,6 +106,13 @@ describe('InferToolCallsFromStream', () => {
     it('should wait until function name is present', () => {
       // Arrange
       const inferToolCallsFromStream = new InferToolCallsFromStream({
+        tools: [
+          {
+            name: 'json',
+            parameters: {},
+            type: 'function',
+          },
+        ],
         type: 'object-tool',
       })
       const delta = '{ "name":'
@@ -102,6 +130,13 @@ describe('InferToolCallsFromStream', () => {
     it('should enqueue function name ', () => {
       // Arrange
       const inferToolCallsFromStream = new InferToolCallsFromStream({
+        tools: [
+          {
+            name: 'json',
+            parameters: {},
+            type: 'function',
+          },
+        ],
         type: 'object-tool',
       })
       const deltas = ['{ "name":', '"json"', ', "parameters": {']
@@ -127,6 +162,13 @@ describe('InferToolCallsFromStream', () => {
     it('should enqueue tool-call-deltas ', () => {
       // Arrange
       const inferToolCallsFromStream = new InferToolCallsFromStream({
+        tools: [
+          {
+            name: 'json',
+            parameters: {},
+            type: 'function',
+          },
+        ],
         type: 'object-tool',
       })
       const deltas = [
@@ -153,6 +195,13 @@ describe('InferToolCallsFromStream', () => {
     it('should enqueue complete tool call at end ', () => {
       // Arrange
       const inferToolCallsFromStream = new InferToolCallsFromStream({
+        tools: [
+          {
+            name: 'json',
+            parameters: {},
+            type: 'function',
+          },
+        ],
         type: 'object-tool',
       })
       const deltas = [

@@ -7,6 +7,7 @@ import {
   LanguageModelV1StreamPart,
 } from '@ai-sdk/provider'
 import {
+  combineHeaders,
   createJsonResponseHandler,
   generateId,
   ParseResult,
@@ -49,6 +50,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     mode,
     presencePenalty,
     prompt,
+    responseFormat,
     seed,
     stopSequences,
     temperature,
@@ -59,7 +61,20 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     const warnings: LanguageModelV1CallWarning[] = []
 
+    if (
+      responseFormat !== undefined &&
+      responseFormat.type === 'json' &&
+      responseFormat.schema !== undefined
+    ) {
+      warnings.push({
+        details: 'JSON response format schema is not supported',
+        setting: 'responseFormat',
+        type: 'unsupported-setting',
+      })
+    }
+
     const baseArguments = {
+      format: responseFormat?.type,
       model: this.modelId,
       options: removeUndefined({
         frequency_penalty: frequencyPenalty,
@@ -159,7 +174,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       },
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
-      headers: this.config.headers(),
+      headers: combineHeaders(this.config.headers(), options.headers),
       successfulResponseHandler: createJsonResponseHandler(
         ollamaChatResponseSchema,
       ),
@@ -203,7 +218,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       body: args,
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
-      headers: this.config.headers(),
+      headers: combineHeaders(this.config.headers(), options.headers),
       successfulResponseHandler: createJsonStreamResponseHandler(
         ollamaChatStreamChunkSchema,
       ),
@@ -212,13 +227,25 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     const { messages: rawPrompt, ...rawSettings } = args
 
-    const inferToolCallsFromStream = new InferToolCallsFromStream({ type })
+    const tools =
+      options.mode.type === 'regular'
+        ? options.mode.tools
+        : options.mode.type === 'object-tool'
+          ? [options.mode.tool]
+          : undefined
+
+    const inferToolCallsFromStream = new InferToolCallsFromStream({
+      tools,
+      type,
+    })
 
     let finishReason: LanguageModelV1FinishReason = 'other'
     let usage: { completionTokens: number; promptTokens: number } = {
       completionTokens: Number.NaN,
       promptTokens: Number.NaN,
     }
+
+    const { experimentalStreamTools = true } = this.settings
 
     return {
       rawCall: { rawPrompt, rawSettings },
@@ -253,13 +280,15 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
               return
             }
 
-            const isToolCallStream = inferToolCallsFromStream.parse({
-              controller,
-              delta: value.message.content,
-            })
+            if (experimentalStreamTools) {
+              const isToolCallStream = inferToolCallsFromStream.parse({
+                controller,
+                delta: value.message.content,
+              })
 
-            if (isToolCallStream) {
-              return
+              if (isToolCallStream) {
+                return
+              }
             }
 
             if (value.message.content !== null) {

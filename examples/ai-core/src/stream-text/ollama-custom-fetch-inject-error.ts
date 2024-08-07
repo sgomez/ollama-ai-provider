@@ -53,8 +53,13 @@ async function main(model: Parameters<typeof ollama>[0]) {
     prompt: 'Invent a new holiday and describe its traditions.',
   })
 
-  for await (const part of result.fullStream) {
-    process.stdout.write(JSON.stringify(part))
+  try {
+    for await (const part of result.fullStream) {
+      process.stdout.write(JSON.stringify(part))
+    }
+  } catch (error: unknown) {
+    console.error(error)
+    process.exit(0)
   }
 
   console.log()
