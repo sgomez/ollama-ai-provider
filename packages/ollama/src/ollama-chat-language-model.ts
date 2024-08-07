@@ -211,6 +211,8 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     options: Parameters<LanguageModelV1['doStream']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
     const { args, type, warnings } = this.getArguments(options)
+    const experimental_stream_tools =
+      this.settings.experimental_stream_tools ?? true
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
@@ -274,6 +276,10 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
                 promptTokens: value.prompt_eval_count || 0,
               }
 
+              return
+            }
+
+            if (!experimental_stream_tools) {
               return
             }
 

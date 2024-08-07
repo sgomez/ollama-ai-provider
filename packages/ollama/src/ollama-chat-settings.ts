@@ -81,6 +81,12 @@ export type OllamaChatModelId =
 
 export interface OllamaChatSettings {
   /**
+   * Until Ollama officially supports tool calling in streams, the provider can try to detect function calls. Enabled by
+   * default to maintain backward compatibility, disable it if you encounter any issues.
+   */
+  experimental_stream_tools?: boolean
+
+  /**
    * Enable Mirostat sampling for controlling perplexity. (default: 0, 0 = disabled, 1 = Mirostat, 2 = Mirostat 2.0)
    */
   mirostat?: 0 | 1 | 2
