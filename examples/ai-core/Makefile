@@ -6,7 +6,7 @@ define RUN_EXAMPLE_TARGET
 	pnpm tsx src/$(subst _,/,$(1)).ts
 endef
 
-all: complex embed embed-many registry generate-object generate-text stream-object stream-text
+all: complex embed embed-many registry generate-object generate-text stream-object stream-text telemetry
 
 # complex
 .PHONY: complex complex-run complex-all semantic-router_main
@@ -154,4 +154,17 @@ stream-text_ollama-reader:
 stream-text_ollama-response-headers:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-tool-call-raw-json-schema:
+	$(call RUN_EXAMPLE_TARGET,$@)
+
+# telemetry
+.PHONY: telemetry telemetry-run telemetry-all telemetry_generate-text telemetry_generate-text-tool-call telemetry_stream-text
+telemetry: telemetry-run telemetry-all
+telemetry-run:
+	echo - examples/telemetry:
+telemetry-all: telemetry_generate-text telemetry_generate-text-tool-call telemetry_stream-text
+telemetry_generate-text:
+	$(call RUN_EXAMPLE_TARGET,$@)
+telemetry_generate-text-tool-call:
+	$(call RUN_EXAMPLE_TARGET,$@)
+telemetry_stream-text:
 	$(call RUN_EXAMPLE_TARGET,$@)

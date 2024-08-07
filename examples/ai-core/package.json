@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {},
   "dependencies": {
+    "@opentelemetry/sdk-node": "0.52.0",
+    "@opentelemetry/auto-instrumentations-node": "0.47.0",
+    "@opentelemetry/sdk-trace-node": "1.25.0",
     "ai": "latest",
     "commander": "^12.1.0",
     "mathjs": "12.4.2",
