@@ -50,6 +50,7 @@ export async function submitUserMessage(content: string): Promise<{
       </BotMessage>
     ),
     maxRetries: 5,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messages: aiState.get().messages.map((message: any) => ({
       content: message.content,
       name: message.name,
@@ -102,7 +103,6 @@ export async function submitUserMessage(content: string): Promise<{
           })
 
           const current = await openWeather.getCurrent()
-          console.debug('current', current)
 
           return (
             <div className="flex flex-col gap-4">
