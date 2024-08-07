@@ -5,9 +5,10 @@
   "scripts": {},
   "dependencies": {
     "ai": "latest",
-    "commander": "^12.0.0",
+    "commander": "^12.1.0",
+    "mathjs": "12.4.2",
     "ollama-ai-provider": "workspace:latest",
-    "zod": "3.22.4",
+    "zod": "3.23.8",
     "zod-to-json-schema": "3.22.4"
   },
   "devDependencies": {
