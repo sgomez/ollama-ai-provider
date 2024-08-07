@@ -49,6 +49,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     mode,
     presencePenalty,
     prompt,
+    responseFormat,
     seed,
     stopSequences,
     temperature,
@@ -59,7 +60,20 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     const warnings: LanguageModelV1CallWarning[] = []
 
+    if (
+      responseFormat !== undefined &&
+      responseFormat.type === 'json' &&
+      responseFormat.schema !== undefined
+    ) {
+      warnings.push({
+        details: 'JSON response format schema is not supported',
+        setting: 'responseFormat',
+        type: 'unsupported-setting',
+      })
+    }
+
     const baseArguments = {
+      format: responseFormat?.type,
       model: this.modelId,
       options: removeUndefined({
         frequency_penalty: frequencyPenalty,
@@ -212,7 +226,17 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     const { messages: rawPrompt, ...rawSettings } = args
 
-    const inferToolCallsFromStream = new InferToolCallsFromStream({ type })
+    const tools =
+      options.mode.type === 'regular'
+        ? options.mode.tools
+        : options.mode.type === 'object-tool'
+          ? [options.mode.tool]
+          : undefined
+
+    const inferToolCallsFromStream = new InferToolCallsFromStream({
+      tools,
+      type,
+    })
 
     let finishReason: LanguageModelV1FinishReason = 'other'
     let usage: { completionTokens: number; promptTokens: number } = {
