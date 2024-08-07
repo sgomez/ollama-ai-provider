@@ -122,7 +122,7 @@ export class InferToolCallsFromStream {
 
   private detectToolCall(delta: string) {
     if (!this._tools || this._tools.length === 0) {
-      return false
+      return
     }
 
     if (this._firstMessage) {

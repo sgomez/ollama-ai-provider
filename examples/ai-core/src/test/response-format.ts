@@ -5,7 +5,9 @@ import { ollama } from 'ollama-ai-provider'
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const result = await ollama(model).doGenerate({
+  const result = await ollama(model, {
+    experimentalStreamTools: false,
+  }).doStream({
     inputFormat: 'prompt',
     mode: { type: 'regular' },
     prompt: [
@@ -32,7 +34,17 @@ async function main(model: Parameters<typeof ollama>[0]) {
     temperature: 0,
   })
 
-  console.log(result.text)
+  const reader = result.stream.getReader()
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      break
+    }
+
+    if (value.type === 'text-delta') {
+      process.stdout.write(value.textDelta)
+    }
+  }
   console.log('WARNINGS:\n', JSON.stringify(result.warnings, null, 2))
 }
 
