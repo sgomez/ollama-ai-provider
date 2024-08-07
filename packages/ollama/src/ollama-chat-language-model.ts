@@ -7,6 +7,7 @@ import {
   LanguageModelV1StreamPart,
 } from '@ai-sdk/provider'
 import {
+  combineHeaders,
   createJsonResponseHandler,
   generateId,
   ParseResult,
@@ -173,7 +174,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       },
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
-      headers: this.config.headers(),
+      headers: combineHeaders(this.config.headers(), options.headers),
       successfulResponseHandler: createJsonResponseHandler(
         ollamaChatResponseSchema,
       ),
@@ -211,15 +212,13 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     options: Parameters<LanguageModelV1['doStream']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
     const { args, type, warnings } = this.getArguments(options)
-    const experimental_stream_tools =
-      this.settings.experimental_stream_tools ?? true
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
       body: args,
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
-      headers: this.config.headers(),
+      headers: combineHeaders(this.config.headers(), options.headers),
       successfulResponseHandler: createJsonStreamResponseHandler(
         ollamaChatStreamChunkSchema,
       ),
@@ -245,6 +244,8 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       completionTokens: Number.NaN,
       promptTokens: Number.NaN,
     }
+
+    const { experimentalStreamTools = true } = this.settings
 
     return {
       rawCall: { rawPrompt, rawSettings },
@@ -279,17 +280,15 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
               return
             }
 
-            if (!experimental_stream_tools) {
-              return
-            }
+            if (experimentalStreamTools) {
+              const isToolCallStream = inferToolCallsFromStream.parse({
+                controller,
+                delta: value.message.content,
+              })
 
-            const isToolCallStream = inferToolCallsFromStream.parse({
-              controller,
-              delta: value.message.content,
-            })
-
-            if (isToolCallStream) {
-              return
+              if (isToolCallStream) {
+                return
+              }
             }
 
             if (value.message.content !== null) {

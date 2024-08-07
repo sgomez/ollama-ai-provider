@@ -257,6 +257,7 @@ describe('doGenerate', () => {
     expect(requestHeaders).toStrictEqual({
       'content-type': 'application/json',
       'custom-provider-header': 'provider-header-value',
+      'custom-request-header': 'request-header-value',
     })
   })
 
