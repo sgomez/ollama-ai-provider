@@ -2,16 +2,16 @@
 
 import { generateId } from 'ai'
 import { createStreamableValue, getMutableAIState, streamUI } from 'ai/rsc'
+import { Loader } from 'lucide-react'
 import { ollama } from 'ollama-ai-provider'
 import OpenWeatherAPI from 'openweather-api-node'
 import { ReactNode } from 'react'
 import { z } from 'zod'
 
 import { AI } from '@/app/actions'
-import { BotMessage } from '@/components/chat/bot-message'
-import { BotStreamMessage } from '@/components/chat/bot-stream-message'
-import { WeatherMessage } from '@/components/chat/weather-message'
-import { SpinnerIcon } from '@/components/icons/spinner'
+import { BotMessage } from '@/components/bot-message'
+import { Message } from '@/components/message'
+import { WeatherMessage } from '@/components/weather-message'
 
 const PROMPT = `You are a helpful assistant specialized in weather-related information.
 
@@ -45,9 +45,9 @@ export async function submitUserMessage(content: string): Promise<{
 
   const result = await streamUI({
     initial: (
-      <BotMessage>
-        <SpinnerIcon />
-      </BotMessage>
+      <Message type="assistant">
+        <Loader className="animate-spin" />
+      </Message>
     ),
     maxRetries: 5,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +62,7 @@ export async function submitUserMessage(content: string): Promise<{
     text: ({ content, delta, done }) => {
       if (!textStream) {
         textStream = createStreamableValue('')
-        textNode = <BotStreamMessage content={textStream.value} />
+        textNode = <BotMessage content={textStream.value} />
       }
 
       if (done) {
@@ -89,9 +89,9 @@ export async function submitUserMessage(content: string): Promise<{
         description: 'Show weather information',
         generate: async function* ({ latitude, location, longitude }) {
           yield (
-            <BotMessage>
-              <SpinnerIcon />
-            </BotMessage>
+            <Message type="assistant">
+              <Loader className="animate-spin" />
+            </Message>
           )
 
           const openWeatherApiKey = process.env.OPENWEATHER_API_KEY ?? ''
@@ -105,10 +105,7 @@ export async function submitUserMessage(content: string): Promise<{
           const current = await openWeather.getCurrent()
 
           return (
-            <div className="flex flex-col gap-4">
-              <BotMessage>This is the weather in {location}</BotMessage>
-              <WeatherMessage location={location} current={current.weather} />
-            </div>
+            <WeatherMessage location={location} current={current.weather} />
           )
         },
         parameters: z.object({

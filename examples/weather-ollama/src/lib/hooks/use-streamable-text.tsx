@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 export const useStreamableText = (
   content: string | StreamableValue<string>,
 ) => {
-  'use client'
   const [rawContent, setRawContent] = useState(
     typeof content === 'string' ? content : '',
   )
