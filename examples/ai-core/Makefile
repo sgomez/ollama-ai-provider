@@ -53,11 +53,11 @@ registry_stream-text:
 
 
 # generate-object
-.PHONY: generate-object generate-object-run generate-object-all generate-object_ollama generate-object_ollama-date-parsing generate-object_ollama-full-json generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-raw-json-schema generate-object_ollama-tool
+.PHONY: generate-object generate-object-run generate-object-all generate-object_ollama generate-object_ollama-date-parsing generate-object_ollama-full-json generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
 generate-object: generate-object-run generate-object-all
 generate-object-run:
 	echo - examples/generate-object:
-generate-object-all: generate-object_ollama generate-object_ollama-date-parsing generate-object_ollama-full-json generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-raw-json-schema generate-object_ollama-tool
+generate-object-all: generate-object_ollama generate-object_ollama-date-parsing generate-object_ollama-full-json generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
 generate-object_ollama-date-parsing:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama:
@@ -67,6 +67,8 @@ generate-object_ollama-full-json:
 generate-object_ollama-json:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama-multimodal:
+	$(call RUN_EXAMPLE_TARGET,$@)
+generate-object_ollama-no-schema:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama-raw-json-schema:
 	$(call RUN_EXAMPLE_TARGET,$@)
@@ -107,30 +109,36 @@ generate-text_ollama-tool-call-raw-json-schema:
 
 
 # stream-object
-.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-tool
+.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
 stream-object: stream-object-run stream-object-all
 stream-object-run:
 	echo - examples/stream-object:
-stream-object-all: stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-tool
+stream-object-all: stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
 stream-object_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-fullstream:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-json:
 	$(call RUN_EXAMPLE_TARGET,$@)
-stream-object_ollama-on-finish:
+stream-object_ollama-no-schema:
 	$(call RUN_EXAMPLE_TARGET,$@)
-stream-object_ollama-tool:
+stream-object_ollama-object:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-object_ollama-on-finish:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-raw-json-schema:
 	$(call RUN_EXAMPLE_TARGET,$@)
+stream-object_ollama-token-usage:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-object_ollama-tool:
+	$(call RUN_EXAMPLE_TARGET,$@)
 
 # stream-text
-.PHONY: stream-text stream-text-run stream-text-all stream-text_ollama stream-text_ollama-abort stream-text_ollama-chatbot stream-text_ollama-chatbot-with-tools stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-custom-fetch-inject-error stream-text_ollama-fullstream stream-text_ollama-on-finish stream-text_ollama-reader stream-text_ollama-response-headers stream-text_ollama-tool-call-raw-json-schema
+.PHONY: stream-text stream-text-run stream-text-all stream-text_ollama stream-text_ollama-abort stream-text_ollama-chatbot stream-text_ollama-chatbot-with-tools stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-custom-fetch-inject-error stream-text_ollama-fullstream stream-text_ollama-ollama-on-chunk stream-text_ollama-ollama-on-chunk-tool-call-streaming stream-text_ollama-on-finish stream-text_ollama-reader stream-text_ollama-response-headers stream-text_ollama-tool-call-raw-json-schema
 stream-text: stream-text-run stream-text-all
 stream-text-run:
 	echo - examples/stream-text:
-stream-text-all: stream-text_ollama stream-text_ollama-abort stream-text_ollama-chatbot stream-text_ollama-chatbot-with-tools stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-custom-fetch-inject-error stream-text_ollama-fullstream stream-text_ollama-on-finish stream-text_ollama-reader stream-text_ollama-response-headers stream-text_ollama-tool-call-raw-json-schema
+stream-text-all: stream-text_ollama stream-text_ollama-abort stream-text_ollama-chatbot stream-text_ollama-chatbot-with-tools stream-text_ollama-completion stream-text_ollama-completion-chat stream-text_ollama-custom-fetch-inject-error stream-text_ollama-fullstream stream-text_ollama-ollama-on-chunk stream-text_ollama-ollama-on-chunk-tool-call-streaming  stream-text_ollama-on-finish stream-text_ollama-reader stream-text_ollama-response-headers stream-text_ollama-tool-call-raw-json-schema
 stream-text_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-abort:
@@ -146,6 +154,10 @@ stream-text_ollama-completion-chat:
 stream-text_ollama-custom-fetch-inject-error:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-fullstream:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-text_ollama-ollama-on-chunk:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-text_ollama-ollama-on-chunk-tool-call-streaming:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-text_ollama-on-finish:
 	$(call RUN_EXAMPLE_TARGET,$@)

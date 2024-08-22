@@ -41,7 +41,8 @@
     {
       "files": "examples/**/*.ts",
       "rules": {
-        "unicorn/prefer-top-level-await": "off"
+        "unicorn/prefer-top-level-await": "off",
+        "@typescript-eslint/no-unused-vars": "off"
       }
     }
   ]
