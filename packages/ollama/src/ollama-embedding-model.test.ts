@@ -19,12 +19,15 @@ describe('doEmbed', () => {
 
   function prepareJsonResponse({
     embeddings = dummyEmbeddings,
+    prompt_eval_count = 8,
   }: {
     embeddings?: EmbeddingModelV1Embedding[]
+    prompt_eval_count?: number
   } = {}) {
     server.responseBodyJson = {
       embeddings,
       model: 'all-minilm',
+      prompt_eval_count,
     }
   }
 
@@ -46,7 +49,7 @@ describe('doEmbed', () => {
     const { rawResponse } = await model.doEmbed({ values: testValues })
 
     expect(rawResponse?.headers).toStrictEqual({
-      'content-length': '79',
+      'content-length': '101',
       // default headers:
       'content-type': 'application/json',
 
