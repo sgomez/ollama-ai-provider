@@ -63,6 +63,11 @@ export type OllamaChatModelId =
   | 'moondream:1.8b'
   | 'openhermes'
   | 'openhermes:v2.5'
+  | 'phi3'
+  | 'phi3:3.8b'
+  | 'phi3:14b'
+  | 'phi3.5'
+  | 'phi3.5:3.8b'
   | 'qwen'
   | 'qwen:7b'
   | 'qwen:14b'
@@ -74,9 +79,10 @@ export type OllamaChatModelId =
   | 'qwen2:1.5b'
   | 'qwen2:7b'
   | 'qwen2:72b'
-  | 'phi3'
-  | 'phi3:3.8b'
-  | 'phi3:14b'
+  | 'smollm'
+  | 'smollm:135m'
+  | 'smollm:360m'
+  | 'smollm:1.7b'
   | (string & NonNullable<unknown>)
 
 export interface OllamaChatSettings {
