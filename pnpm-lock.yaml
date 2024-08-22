@@ -82,7 +82,7 @@ importers:
         version: 1.25.0(@opentelemetry/api@1.9.0)
       ai:
         specifier: latest
-        version: 3.3.3(openai@4.52.6)(react@18.3.1)(solid-js@1.8.17)(sswr@2.1.0(svelte@4.2.17))(svelte@4.2.17)(vue@3.4.27(typescript@5.1.3))(zod@3.23.8)
+        version: 3.3.3(openai@4.52.6)(react@18.3.1)(solid-js@1.8.17)(sswr@2.1.0(svelte@4.2.17))(svelte@4.2.17)(vue@3.4.27(typescript@5.5.4))(zod@3.23.8)
       commander:
         specifier: ^12.1.0
         version: 12.1.0
@@ -96,24 +96,18 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
       zod-to-json-schema:
-        specifier: 3.22.4
-        version: 3.22.4(zod@3.23.8)
+        specifier: 3.23.2
+        version: 3.23.2(zod@3.23.8)
     devDependencies:
-      '@types/json-schema':
-        specifier: ^7.0.15
-        version: 7.0.15
       '@types/node':
         specifier: 20.11.20
         version: 20.11.20
-      json-schema:
-        specifier: ^0.4.0
-        version: 0.4.0
       tsx:
         specifier: 4.7.1
         version: 4.7.1
       typescript:
-        specifier: 5.1.3
-        version: 5.1.3
+        specifier: 5.5.4
+        version: 5.5.4
 
   examples/weather-ollama:
     dependencies:
@@ -170,11 +164,11 @@ importers:
   packages/ollama:
     dependencies:
       '@ai-sdk/provider':
-        specifier: 0.0.15
-        version: 0.0.15
+        specifier: 0.0.21
+        version: 0.0.21
       '@ai-sdk/provider-utils':
-        specifier: 1.0.7
-        version: 1.0.7(zod@3.23.8)
+        specifier: 1.0.16
+        version: 1.0.16(zod@3.23.8)
       partial-json:
         specifier: 0.1.7
         version: 0.1.7
@@ -187,18 +181,18 @@ importers:
         version: 18.19.43
       tsup:
         specifier: ^8.2.4
-        version: 8.2.4(jiti@1.21.6)(postcss@8.4.41)(typescript@5.1.3)(yaml@2.4.5)
+        version: 8.2.4(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.4.5)
       typescript:
-        specifier: 5.1.3
-        version: 5.1.3
+        specifier: 5.5.4
+        version: 5.5.4
       zod:
         specifier: 3.23.8
         version: 3.23.8
 
 packages:
 
-  '@ai-sdk/provider-utils@1.0.7':
-    resolution: {integrity: sha512-xIDpinTnuInH16wBgKAVdN6pmrpjlJF+5f+f/8ahYMQlYzpe4Vj1qw8OL+rUGdCePcRSrFmjk8G/wdX5+J8dIw==}
+  '@ai-sdk/provider-utils@1.0.16':
+    resolution: {integrity: sha512-8Nd8vIkGTIthhfgJEdP9KyMlykehBNP/1J47eMC3vQqYgJV6r5Bgvl3LFVfWi9KzamiD8tp9nU2NJKTeo4MH/A==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -215,12 +209,12 @@ packages:
       zod:
         optional: true
 
-  '@ai-sdk/provider@0.0.15':
-    resolution: {integrity: sha512-phX/YdwKd8q8/uZ7MsUytcHuN5KvT+wgM+y78eu6E+VyFE3GRwelctBFnaaA96uRL6xnKNmb0e7e+2fDOYuBoA==}
-    engines: {node: '>=18'}
-
   '@ai-sdk/provider@0.0.16':
     resolution: {integrity: sha512-PnNUvedxoCvkyzcA5otNHi5xQdTiw58Ql4m9I9kT8I/Zs2R7RRNkvvCbbRfRztWvIpZvvA2q/UTO7xJHhleY7Q==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/provider@0.0.21':
+    resolution: {integrity: sha512-9j95uaPRxwYkzQdkl4XO/MmWWW5c5vcVSXtqvALpD9SMB9fzH46dO3UN4VbOJR2J3Z84CZAqgZu5tNlkptT9qQ==}
     engines: {node: '>=18'}
 
   '@ai-sdk/react@0.0.39':
@@ -4294,11 +4288,6 @@ packages:
     resolution: {integrity: sha512-EGjWssW7Tsk4DGfE+5yluuljS1OGYWiI1J6e8puZz9nTMM51Oug8CD5Zo4gWMsOhq5BI+1bF+rWTm4Vbj3ivRA==}
     engines: {node: '>= 18'}
 
-  typescript@5.1.3:
-    resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.5.4:
     resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
@@ -4515,24 +4504,24 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  zod-to-json-schema@3.22.4:
-    resolution: {integrity: sha512-2Ed5dJ+n/O3cU383xSY28cuVi0BCQhF8nYqWU5paEpl7fVdqdAmiLdqLyfblbNdfOFwFfi/mqU4O1pwc60iBhQ==}
-    peerDependencies:
-      zod: ^3.22.4
-
   zod-to-json-schema@3.22.5:
     resolution: {integrity: sha512-+akaPo6a0zpVCCseDed504KBJUQpEW5QZw7RMneNmKw+fGaML1Z9tUNLnHHAC8x6dzVRO1eB2oEMyZRnuBZg7Q==}
     peerDependencies:
       zod: ^3.22.4
+
+  zod-to-json-schema@3.23.2:
+    resolution: {integrity: sha512-uSt90Gzc/tUfyNqxnjlfBs8W6WSGpNBv0rVsNxP/BVSMHMKGdthPYff4xtCHYloJGM0CFxFsb3NbC0eqPhfImw==}
+    peerDependencies:
+      zod: ^3.23.3
 
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
-  '@ai-sdk/provider-utils@1.0.7(zod@3.23.8)':
+  '@ai-sdk/provider-utils@1.0.16(zod@3.23.8)':
     dependencies:
-      '@ai-sdk/provider': 0.0.15
+      '@ai-sdk/provider': 0.0.21
       eventsource-parser: 1.1.2
       nanoid: 3.3.6
       secure-json-parse: 2.7.0
@@ -4548,11 +4537,11 @@ snapshots:
     optionalDependencies:
       zod: 3.23.8
 
-  '@ai-sdk/provider@0.0.15':
+  '@ai-sdk/provider@0.0.16':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/provider@0.0.16':
+  '@ai-sdk/provider@0.0.21':
     dependencies:
       json-schema: 0.4.0
 
@@ -4591,16 +4580,6 @@ snapshots:
       secure-json-parse: 2.7.0
     optionalDependencies:
       zod: 3.23.8
-
-  '@ai-sdk/vue@0.0.31(vue@3.4.27(typescript@5.1.3))(zod@3.23.8)':
-    dependencies:
-      '@ai-sdk/provider-utils': 1.0.8(zod@3.23.8)
-      '@ai-sdk/ui-utils': 0.0.27(zod@3.23.8)
-      swrv: 1.0.4(vue@3.4.27(typescript@5.1.3))
-    optionalDependencies:
-      vue: 3.4.27(typescript@5.1.3)
-    transitivePeerDependencies:
-      - zod
 
   '@ai-sdk/vue@0.0.31(vue@3.4.27(typescript@5.5.4))(zod@3.23.8)':
     dependencies:
@@ -6435,12 +6414,6 @@ snapshots:
       '@vue/shared': 3.4.27
       csstype: 3.1.3
 
-  '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.1.3))':
-    dependencies:
-      '@vue/compiler-ssr': 3.4.27
-      '@vue/shared': 3.4.27
-      vue: 3.4.27(typescript@5.1.3)
-
   '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.5.4))':
     dependencies:
       '@vue/compiler-ssr': 3.4.27
@@ -6481,32 +6454,6 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
     optional: true
-
-  ai@3.3.3(openai@4.52.6)(react@18.3.1)(solid-js@1.8.17)(sswr@2.1.0(svelte@4.2.17))(svelte@4.2.17)(vue@3.4.27(typescript@5.1.3))(zod@3.23.8):
-    dependencies:
-      '@ai-sdk/provider': 0.0.16
-      '@ai-sdk/provider-utils': 1.0.8(zod@3.23.8)
-      '@ai-sdk/react': 0.0.39(react@18.3.1)(zod@3.23.8)
-      '@ai-sdk/solid': 0.0.30(solid-js@1.8.17)(zod@3.23.8)
-      '@ai-sdk/svelte': 0.0.32(svelte@4.2.17)(zod@3.23.8)
-      '@ai-sdk/ui-utils': 0.0.27(zod@3.23.8)
-      '@ai-sdk/vue': 0.0.31(vue@3.4.27(typescript@5.1.3))(zod@3.23.8)
-      '@opentelemetry/api': 1.9.0
-      eventsource-parser: 1.1.2
-      json-schema: 0.4.0
-      jsondiffpatch: 0.6.0
-      nanoid: 3.3.6
-      secure-json-parse: 2.7.0
-      zod-to-json-schema: 3.22.5(zod@3.23.8)
-    optionalDependencies:
-      openai: 4.52.6
-      react: 18.3.1
-      sswr: 2.1.0(svelte@4.2.17)
-      svelte: 4.2.17
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - solid-js
-      - vue
 
   ai@3.3.3(openai@4.52.6)(react@18.3.1)(solid-js@1.8.17)(sswr@2.1.0(svelte@4.2.17))(svelte@4.2.17)(vue@3.4.27(typescript@5.5.4))(zod@3.23.8):
     dependencies:
@@ -8818,10 +8765,6 @@ snapshots:
 
   swrev@4.0.0: {}
 
-  swrv@1.0.4(vue@3.4.27(typescript@5.1.3)):
-    dependencies:
-      vue: 3.4.27(typescript@5.1.3)
-
   swrv@1.0.4(vue@3.4.27(typescript@5.5.4)):
     dependencies:
       vue: 3.4.27(typescript@5.5.4)
@@ -8931,7 +8874,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  tsup@8.2.4(jiti@1.21.6)(postcss@8.4.41)(typescript@5.1.3)(yaml@2.4.5):
+  tsup@8.2.4(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.4.5):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
@@ -8951,7 +8894,7 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       postcss: 8.4.41
-      typescript: 5.1.3
+      typescript: 5.5.4
     transitivePeerDependencies:
       - jiti
       - supports-color
@@ -9013,8 +8956,6 @@ snapshots:
       possible-typed-array-names: 1.0.0
 
   typed-function@4.2.1: {}
-
-  typescript@5.1.3: {}
 
   typescript@5.5.4: {}
 
@@ -9128,16 +9069,6 @@ snapshots:
       - supports-color
       - terser
 
-  vue@3.4.27(typescript@5.1.3):
-    dependencies:
-      '@vue/compiler-dom': 3.4.27
-      '@vue/compiler-sfc': 3.4.27
-      '@vue/runtime-dom': 3.4.27
-      '@vue/server-renderer': 3.4.27(vue@3.4.27(typescript@5.1.3))
-      '@vue/shared': 3.4.27
-    optionalDependencies:
-      typescript: 5.1.3
-
   vue@3.4.27(typescript@5.5.4):
     dependencies:
       '@vue/compiler-dom': 3.4.27
@@ -9249,11 +9180,11 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zod-to-json-schema@3.22.4(zod@3.23.8):
+  zod-to-json-schema@3.22.5(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 
-  zod-to-json-schema@3.22.5(zod@3.23.8):
+  zod-to-json-schema@3.23.2(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 
