@@ -18,6 +18,8 @@ export type OllamaChatModelId =
   | 'deepseek-coder-v2:236b'
   | 'falcon2'
   | 'falcon2:11b'
+  | 'firefunction-v2'
+  | 'firefunction-v2:70b'
   | 'gemma'
   | 'gemma:2b'
   | 'gemma:7b'
