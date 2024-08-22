@@ -7,7 +7,7 @@ import { OllamaEmbeddingModelId } from 'ollama-ai-provider/src/ollama-embedding-
 import { buildProgram } from '../tools/command'
 
 async function main(model: OllamaEmbeddingModelId) {
-  const { embeddings } = await embedMany({
+  const { embeddings, usage } = await embedMany({
     model: ollama.embedding(model),
     values: [
       'sunny day at the beach',
@@ -17,6 +17,7 @@ async function main(model: OllamaEmbeddingModelId) {
   })
 
   console.log(embeddings)
+  console.log(usage)
 }
 
 buildProgram('nomic-embed-text', main).catch(console.error)

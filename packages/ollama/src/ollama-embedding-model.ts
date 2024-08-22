@@ -64,12 +64,6 @@ export class OllamaEmbeddingModel implements EmbeddingModelV1<string> {
       })
     }
 
-    const embeddings: Awaited<ReturnType<EmbeddingModelV1<string>['doEmbed']>> =
-      {
-        embeddings: [],
-        rawResponse: { headers: {} },
-      }
-
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal,
       body: {
@@ -85,13 +79,17 @@ export class OllamaEmbeddingModel implements EmbeddingModelV1<string> {
       url: `${this.config.baseURL}/embed`,
     })
 
-    embeddings.embeddings = response.embeddings
-    embeddings.rawResponse = { headers: responseHeaders }
-
-    return embeddings
+    return {
+      embeddings: response.embeddings,
+      rawResponse: { headers: responseHeaders },
+      usage: response.prompt_eval_count
+        ? { tokens: response.prompt_eval_count }
+        : undefined,
+    }
   }
 }
 
 const ollamaTextEmbeddingResponseSchema = z.object({
   embeddings: z.array(z.array(z.number())),
+  prompt_eval_count: z.number().nullable(),
 })

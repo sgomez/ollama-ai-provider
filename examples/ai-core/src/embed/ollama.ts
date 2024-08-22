@@ -7,12 +7,13 @@ import { OllamaEmbeddingModelId } from 'ollama-ai-provider/src/ollama-embedding-
 import { buildProgram } from '../tools/command'
 
 async function main(model: OllamaEmbeddingModelId) {
-  const { embedding } = await embed({
+  const { embedding, usage } = await embed({
     model: ollama.embedding(model),
     value: 'sunny day at the beach',
   })
 
   console.log(embedding)
+  console.log(usage)
 }
 
 buildProgram('nomic-embed-text', main).catch(console.error)
