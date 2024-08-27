@@ -1,2 +1,3 @@
 export * from './ollama-facade'
-export * from './ollama-provider'
+export type { OllamaProvider, OllamaProviderSettings } from './ollama-provider'
+export { createOllama, ollama } from './ollama-provider'

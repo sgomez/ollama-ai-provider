@@ -41,15 +41,18 @@ embed-many_ollama-cosine-similarity:
 
 
 # registry
-.PHONY: registry registry-run registry-all registry_embed registry_stream-text
+.PHONY: registry registry-run registry-all registry_embed registry_stream-text registry_stream-multimodal
 registry: registry-run registry-all
 registry-run:
 	echo - examples/registry:
-registry-all: registry_embed registry_stream-text
+registry-all: registry_embed registry_stream-text registry_stream-multimodal
 registry_embed:
 	$(call RUN_EXAMPLE_TARGET,$@)
 registry_stream-text:
 	$(call RUN_EXAMPLE_TARGET,$@)
+registry_stream-multimodal:
+	$(call RUN_EXAMPLE_TARGET,$@)
+
 
 
 # generate-object

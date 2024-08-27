@@ -1,5 +1,7 @@
 #! /usr/bin/env -S pnpm tsx
 
+import fs from 'node:fs'
+
 import { streamText } from 'ai'
 import { ollama } from 'ollama-ai-provider'
 
@@ -8,8 +10,17 @@ import { registry } from './setup-registry'
 
 async function main(model: Parameters<typeof ollama>[0]) {
   const result = await streamText({
+    maxTokens: 512,
+    messages: [
+      {
+        content: [
+          { text: 'Describe the image in detail.', type: 'text' },
+          { image: fs.readFileSync('./data/comic-cat.png'), type: 'image' },
+        ],
+        role: 'user',
+      },
+    ],
     model: registry.languageModel(model),
-    prompt: 'Invent a new holiday and describe its traditions.',
   })
 
   for await (const textPart of result.textStream) {
@@ -17,4 +28,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   }
 }
 
-buildProgram('ollama:text', main).catch(console.error)
+buildProgram('ollama:multimodal', main).catch(console.error)
