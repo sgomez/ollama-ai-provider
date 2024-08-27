@@ -1,3 +1,4 @@
+import { EmbeddingModelV1, LanguageModelV1, ProviderV1 } from '@ai-sdk/provider'
 import { withoutTrailingSlash } from '@ai-sdk/provider-utils'
 
 import { OllamaChatLanguageModel } from '@/ollama-chat-language-model'
@@ -8,31 +9,39 @@ import {
   OllamaEmbeddingSettings,
 } from '@/ollama-embedding-settings'
 
-export interface OllamaProvider {
-  (
-    modelId: OllamaChatModelId,
-    settings?: OllamaChatSettings,
-  ): OllamaChatLanguageModel
+export interface OllamaProvider extends ProviderV1 {
+  (modelId: OllamaChatModelId, settings?: OllamaChatSettings): LanguageModelV1
 
   chat(
     modelId: OllamaChatModelId,
     settings?: OllamaChatSettings,
-  ): OllamaChatLanguageModel
+  ): LanguageModelV1
 
+  /**
+   * @deprecated Use `textEmbeddingModel` instead.
+   */
   embedding(
     modelId: OllamaEmbeddingModelId,
     settings?: OllamaEmbeddingSettings,
-  ): OllamaEmbeddingModel
+  ): EmbeddingModelV1<string>
 
   languageModel(
     modelId: OllamaChatModelId,
     settings?: OllamaChatSettings,
-  ): OllamaChatLanguageModel
+  ): LanguageModelV1
 
+  /**
+   * @deprecated Use `textEmbeddingModel()` instead.
+   */
   textEmbedding(
     modelId: OllamaEmbeddingModelId,
     settings?: OllamaEmbeddingSettings,
-  ): OllamaEmbeddingModel
+  ): EmbeddingModelV1<string>
+
+  textEmbeddingModel(
+    modelId: OllamaEmbeddingModelId,
+    settings?: OllamaEmbeddingSettings,
+  ): EmbeddingModelV1<string>
 }
 
 export interface OllamaProviderSettings {
@@ -104,6 +113,7 @@ export function createOllama(
   provider.embedding = createEmbeddingModel
   provider.languageModel = createChatModel
   provider.textEmbedding = createEmbeddingModel
+  provider.textEmbeddingModel = createEmbeddingModel
 
   return provider as OllamaProvider
 }
