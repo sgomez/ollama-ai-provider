@@ -8,8 +8,8 @@ import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
   const result = await generateObject({
-    mode: 'json',
     model: ollama(model),
+    output: 'array',
     prompt:
       'Generate 3 character descriptions for a fantasy role playing game.',
     schema: z.object({
