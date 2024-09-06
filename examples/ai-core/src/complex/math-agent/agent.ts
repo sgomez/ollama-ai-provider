@@ -16,7 +16,7 @@ const problem =
 async function main(model: OllamaChatModelId) {
   console.log(`PROBLEM: ${problem}\n`)
 
-  await generateText({
+  const response = await generateText({
     maxToolRoundtrips: 10,
     model: ollama(model),
     prompt: problem,
@@ -25,7 +25,7 @@ async function main(model: OllamaChatModelId) {
       'Reason step by step. ' +
       'Use the tool `calculate` when necessary. ' +
       'The calculator can only do simple additions, subtractions, multiplications, and divisions. ' +
-      'When you give the final answer, provide an explanation for how you got it.',
+      'When you give the final answer, provide an explanation for how you got it using the `answer` tool.',
     toolChoice: 'required',
     tools: {
       answer: tool({
@@ -45,6 +45,8 @@ async function main(model: OllamaChatModelId) {
       }),
     },
   })
+
+  console.error(JSON.stringify(response, null, 2))
 }
 
 buildProgram('firefunction-v2', main).catch(console.error)
