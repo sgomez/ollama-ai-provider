@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.14.0
+
+### Minor Changes
+
+- Upgrade ai sdk and middleware examples
+
 ## 0.13.0
 
 ### Minor Changes
