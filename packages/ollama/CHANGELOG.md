@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.15.0
+
+### Minor Changes
+
+- Add missed Ollama API settings
+
 ## 0.14.0
 
 ### Minor Changes
