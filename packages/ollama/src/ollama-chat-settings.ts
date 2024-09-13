@@ -95,6 +95,26 @@ export interface OllamaChatSettings {
   experimentalStreamTools?: boolean
 
   /**
+   * Enables the use of half-precision floating point values for key-value memory. This helps in optimizing memory usage. (Default: true)
+   */
+  f16Kv?: boolean
+
+  /**
+   * If set to true, reduces the VRAM usage by trading off speed for memory. (Default: false)
+   */
+  lowVram?: boolean
+
+  /**
+   * Sets which GPU is the main one.
+   */
+  mainGpu?: number
+
+  /**
+   * Minimum cumulative probability for tokens to be considered. (Default: 0.0)
+   */
+  minP?: number
+
+  /**
    * Enable Mirostat sampling for controlling perplexity. (default: 0, 0 = disabled, 1 = Mirostat, 2 = Mirostat 2.0)
    */
   mirostat?: 0 | 1 | 2
@@ -112,9 +132,44 @@ export interface OllamaChatSettings {
   mirostatTau?: number
 
   /**
+   * Controls whether to use Non-Uniform Memory Access (NUMA) for more efficient memory management. (Default: false)
+   */
+  numa?: boolean
+
+  /**
+   * Sets the number of batches to be processed. (Default: 512)
+   */
+  numBatch?: number
+
+  /**
    * Sets the size of the context window used to generate the next token. (Default: 2048)
    */
   numCtx?: number
+
+  /**
+   * Controls the number of GPUs to use for the operation. (Default: -1, indicates that NumGPU should be set dynamically)
+   */
+  numGpu?: number
+
+  /**
+   * Keeps a number of tokens from the context. Controls how many of the previous tokens are retained. (Default: 4)
+   */
+  numKeep?: number
+
+  /**
+   * Controls the number of tokens to predict in a single generation. (Default: -1)
+   */
+  numPredict?: number
+
+  /**
+   * Sets the number of CPU threads to use. (Default: 0, indicates let the runtime decide)
+   */
+  numThread?: number
+
+  /**
+   * Penalizes the model for generating newline characters. If set to true, it discourages the model from generating too many newlines. (Default: true)
+   */
+  penalizeNewline?: boolean
 
   /**
    * Sets how far back for the model to look back to prevent repetition. (Default: 64, 0 = disabled, -1 = num_ctx)
@@ -148,4 +203,24 @@ export interface OllamaChatSettings {
    * @deprecated Use `topK` from AI SDK functions.
    */
   topK?: number
+
+  /**
+   * Controls the "typical" sampling probability. (Default: 1.0)
+   */
+  typicalP?: number
+
+  /**
+   * Locks the memory to prevent swapping, which can be useful for performance optimization. (Default: false)
+   */
+  useMlock?: boolean
+
+  /**
+   * Enables memory mapping to reduce RAM usage. (Default: false)
+   */
+  useMmap?: boolean
+
+  /**
+   * If true, the model will only load the vocabulary without performing further computation. (Default: false)
+   */
+  vocabOnly?: boolean
 }
