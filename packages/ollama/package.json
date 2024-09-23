@@ -27,7 +27,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ai-sdk/provider": "0.0.23",
-    "@ai-sdk/provider-utils": "1.0.18",
+    "@ai-sdk/provider-utils": "1.0.19",
     "partial-json": "0.1.7"
   },
   "devDependencies": {
