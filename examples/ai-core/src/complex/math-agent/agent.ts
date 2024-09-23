@@ -8,34 +8,24 @@ import { z } from 'zod'
 
 import { buildProgram } from '../../tools/command'
 
-const problem =
-  'A taxi driver earns $9461 per 1-hour work. ' +
-  'If he works 12 hours a day and in 1 hour he uses 12-liters petrol with price $134 for 1-liter. ' +
-  'How much money does he earn in one day?'
-
 async function main(model: OllamaChatModelId) {
-  console.log(`PROBLEM: ${problem}\n`)
-
-  const response = await generateText({
-    maxToolRoundtrips: 10,
+  const { text: answer } = await generateText({
+    maxSteps: 10,
     model: ollama(model),
-    prompt: problem,
+    onStepFinish: async ({ toolResults }) => {
+      console.log(`STEP RESULTS: ${JSON.stringify(toolResults, null, 2)}`)
+    },
+    prompt:
+      'A taxi driver earns $9461 per 1-hour work. ' +
+      'If he works 12 hours a day and in 1 hour he uses 14-liters petrol with price $134 for 1-liter. ' +
+      'How much money does he earn in one day?',
     system:
       'You are solving math problems. ' +
       'Reason step by step. ' +
-      'Use the tool `calculate` when necessary. ' +
+      'Use the calculator when necessary. ' +
       'The calculator can only do simple additions, subtractions, multiplications, and divisions. ' +
-      'When you give the final answer, provide an explanation for how you got it using the `answer` tool.',
-    toolChoice: 'required',
+      'When you give the final answer, provide an explanation for how you got it.',
     tools: {
-      answer: tool({
-        description: 'A tool for providing the final answer.',
-        execute: async ({ answer }) => {
-          console.log(`ANSWER: ${answer}`)
-          process.exit(0)
-        },
-        parameters: z.object({ answer: z.string() }),
-      }),
       calculate: tool({
         description:
           'A tool for evaluating mathematical expressions. Example expressions: ' +
@@ -46,7 +36,7 @@ async function main(model: OllamaChatModelId) {
     },
   })
 
-  console.error(JSON.stringify(response, null, 2))
+  console.log(`FINAL ANSWER: ${answer}`)
 }
 
-buildProgram('firefunction-v2', main).catch(console.error)
+buildProgram('qwen2.5', main).catch(console.error)

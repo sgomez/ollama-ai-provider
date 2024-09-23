@@ -72,16 +72,18 @@ registry_stream-multimodal:
 
 
 # generate-object
-.PHONY: generate-object generate-object-run generate-object-all generate-object_ollama generate-object_ollama-array generate-object_ollama-date-parsing generate-object_ollama-full-result generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
+.PHONY: generate-object generate-object-run generate-object-all generate-object_ollama generate-object_ollama-array generate-object_ollama-date-parsing generate-object_ollama-enum generate-object_ollama-full-result generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
 generate-object: generate-object-run generate-object-all
 generate-object-run:
 	echo - examples/generate-object:
-generate-object-all: generate-object_ollama generate-object_ollama-array generate-object_ollama-date-parsing generate-object_ollama-full-result generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
+generate-object-all: generate-object_ollama generate-object_ollama-array generate-object_ollama-date-parsing generate-object_ollama-enum generate-object_ollama-full-result generate-object_ollama-json generate-object_ollama-multimodal generate-object_ollama-no-schema generate-object_ollama-raw-json-schema generate-object_ollama-tool
 generate-object_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama-array:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama-date-parsing:
+	$(call RUN_EXAMPLE_TARGET,$@)
+generate-object_ollama-enum:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-object_ollama-full-result:
 	$(call RUN_EXAMPLE_TARGET,$@)
@@ -98,11 +100,11 @@ generate-object_ollama-tool:
 
 
 # generate-text
-.PHONY: generate-text generate-text-run generate-text-all generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-custom-fetch generate-text_ollama-custom-headers generate-text_ollama-full-result generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-multimodal-url generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-tool-call-raw-json-schema
+.PHONY: generate-text generate-text-run generate-text-all generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-custom-fetch generate-text_ollama-custom-headers generate-text_ollama-full-result generate-text_ollama-log-metadata-middleware generate-text_ollama-multi-step generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-multimodal-url generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-tool-call-raw-json-schema
 generate-text: generate-text-run generate-text-all
 generate-text-run:
 	echo - examples/generate-text:
-generate-text-all: generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-custom-fetch generate-text_ollama-custom-headers generate-text_ollama-full-result generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-multimodal-url generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-tool-call-raw-json-schema
+generate-text-all: generate-text_ollama generate-text_ollama-completion generate-text_ollama-completion-chat generate-text_ollama-custom-fetch generate-text_ollama-custom-headers generate-text_ollama-full-result generate-text_ollama-log-metadata-middleware generate-text_ollama-multi-step generate-text_ollama-multimodal generate-text_ollama-multimodal-base64 generate-text_ollama-multimodal-url generate-text_ollama-system-message-a generate-text_ollama-system-message-b generate-text_ollama-tool-call generate-text_ollama-tool-call-raw-json-schema
 generate-text_ollama:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-completion:
@@ -114,6 +116,10 @@ generate-text_ollama-custom-fetch:
 generate-text_ollama-custom-headers:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-full-result:
+	$(call RUN_EXAMPLE_TARGET,$@)
+generate-text_ollama-log-metadata-middleware:
+	$(call RUN_EXAMPLE_TARGET,$@)
+generate-text_ollama-multi-step:
 	$(call RUN_EXAMPLE_TARGET,$@)
 generate-text_ollama-multimodal:
 	$(call RUN_EXAMPLE_TARGET,$@)
@@ -132,12 +138,14 @@ generate-text_ollama-tool-call-raw-json-schema:
 
 
 # stream-object
-.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
+.PHONY: stream-object stream-object-run stream-object-all stream-object_ollama stream-object_ollama-array stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
 stream-object: stream-object-run stream-object-all
 stream-object-run:
 	echo - examples/stream-object:
-stream-object-all: stream-object_ollama stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
+stream-object-all: stream-object_ollama stream-object_ollama-array stream-object_ollama-fullstream stream-object_ollama-json stream-object_ollama-no-schema stream-object_ollama-object stream-object_ollama-on-finish stream-object_ollama-raw-json-schema stream-object_ollama-token-usage stream-object_ollama-tool
 stream-object_ollama:
+	$(call RUN_EXAMPLE_TARGET,$@)
+stream-object_ollama-array:
 	$(call RUN_EXAMPLE_TARGET,$@)
 stream-object_ollama-fullstream:
 	$(call RUN_EXAMPLE_TARGET,$@)
