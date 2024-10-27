@@ -1,5 +1,12 @@
 # ollama-ai-provider
 
+## 0.16.0
+
+### Minor Changes
+
+- Add access to request body
+- Add provider defined tools API
+
 ## 0.15.2
 
 ### Patch Changes
