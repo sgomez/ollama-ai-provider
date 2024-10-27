@@ -20,6 +20,7 @@ import { InferToolCallsFromStream } from '@/generate-tool/infer-tool-calls-from-
 import { mapOllamaFinishReason } from '@/map-ollama-finish-reason'
 import { OllamaChatModelId, OllamaChatSettings } from '@/ollama-chat-settings'
 import { ollamaFailedResponseHandler } from '@/ollama-error'
+import { prepareTools } from '@/prepare-tools'
 import { createJsonStreamResponseHandler, removeUndefined } from '@/utils'
 
 interface OllamaChatConfig {
@@ -111,23 +112,18 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
 
     switch (type) {
       case 'regular': {
-        const tools = mode.tools?.length ? mode.tools : undefined
+        const { tools, toolWarnings } = prepareTools({
+          mode,
+        })
 
         return {
           args: {
             ...baseArguments,
             messages: convertToOllamaChatMessages(prompt),
-            tools: tools?.map((tool) => ({
-              function: {
-                description: tool.description,
-                name: tool.name,
-                parameters: tool.parameters,
-              },
-              type: 'function',
-            })),
+            tools,
           },
           type,
-          warnings,
+          warnings: [...warnings, ...toolWarnings],
         }
       }
 
