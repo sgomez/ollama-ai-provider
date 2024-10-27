@@ -179,13 +179,14 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     options: Parameters<LanguageModelV1['doGenerate']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doGenerate']>>> {
     const { args, warnings } = this.getArguments(options)
+    const body = {
+      ...args,
+      stream: false,
+    }
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
-      body: {
-        ...args,
-        stream: false,
-      },
+      body,
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
       headers: combineHeaders(this.config.headers(), options.headers),
@@ -195,7 +196,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       url: `${this.config.baseURL}/chat`,
     })
 
-    const { messages: rawPrompt, ...rawSettings } = args
+    const { messages: rawPrompt, ...rawSettings } = body
 
     const toolCalls: LanguageModelV1FunctionToolCall[] | undefined =
       response.message.tool_calls?.map((toolCall) => ({
@@ -212,6 +213,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       }),
       rawCall: { rawPrompt, rawSettings },
       rawResponse: { headers: responseHeaders },
+      request: { body: JSON.stringify(body) },
       text: response.message.content ?? undefined,
       toolCalls,
       usage: {
@@ -225,11 +227,11 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   async doStream(
     options: Parameters<LanguageModelV1['doStream']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
-    const { args, type, warnings } = this.getArguments(options)
+    const { args: body, type, warnings } = this.getArguments(options)
 
     const { responseHeaders, value: response } = await postJsonToApi({
       abortSignal: options.abortSignal,
-      body: args,
+      body,
       failedResponseHandler: ollamaFailedResponseHandler,
       fetch: this.config.fetch,
       headers: combineHeaders(this.config.headers(), options.headers),
@@ -239,7 +241,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
       url: `${this.config.baseURL}/chat`,
     })
 
-    const { messages: rawPrompt, ...rawSettings } = args
+    const { messages: rawPrompt, ...rawSettings } = body
 
     const tools =
       options.mode.type === 'regular'
@@ -264,6 +266,7 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     return {
       rawCall: { rawPrompt, rawSettings },
       rawResponse: { headers: responseHeaders },
+      request: { body: JSON.stringify(body) },
       stream: response.pipeThrough(
         new TransformStream<
           ParseResult<z.infer<typeof ollamaChatStreamChunkSchema>>,
