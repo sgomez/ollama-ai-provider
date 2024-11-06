@@ -1,5 +1,11 @@
 # ollama-ai-provider
 
+## 0.16.1
+
+### Patch Changes
+
+- Update models and examples
+
 ## 0.16.0
 
 ### Minor Changes
