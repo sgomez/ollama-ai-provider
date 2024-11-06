@@ -28,4 +28,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log(result.text)
 }
 
-buildProgram('llava-llama3', main).catch(console.error)
+buildProgram('llama3.2-vision', main).catch(console.error)
