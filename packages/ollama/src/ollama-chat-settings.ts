@@ -225,26 +225,10 @@ export interface OllamaChatSettings {
   repeatPenalty?: number
 
   /**
-   * Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return.
-   * Multiple stop patterns may be set by specifying multiple separate `stop` parameters in a modelfile.
-   *
-   * @deprecated Use `stopSequences` from AI SDK functions.
-   */
-  stop?: string
-
-  /**
    * Tail free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0)
    * will reduce the impact more, while a value of 1.0 disables this setting. (default: 1)
    */
   tfsZ?: number
-
-  /**
-   * Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a
-   * lower value (e.g. 10) will be more conservative. (Default: 40)
-   *
-   * @deprecated Use `topK` from AI SDK functions.
-   */
-  topK?: number
 
   /**
    * Controls the "typical" sampling probability. (Default: 1.0)
