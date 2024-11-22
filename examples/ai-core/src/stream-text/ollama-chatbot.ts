@@ -2,8 +2,9 @@
 
 import * as readline from 'node:readline/promises'
 
-import { CoreMessage, streamText } from 'ai'
+import { CoreMessage, streamText, tool } from 'ai'
 import { ollama } from 'ollama-ai-provider'
+import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 
@@ -21,20 +22,33 @@ async function main(model: Parameters<typeof ollama>[0]) {
     messages.push({ content: userInput, role: 'user' })
 
     const result = await streamText({
+      maxSteps: 5,
       messages,
       model: ollama(model),
-      system: `You are a helpful, respectful and honest assistant.`,
+      tools: {
+        weather: tool({
+          description: 'Get the weather in a location',
+          execute: async ({ location }) => ({
+            location,
+            temperature: 72 + Math.floor(Math.random() * 21) - 10,
+          }),
+          parameters: z.object({
+            location: z
+              .string()
+              .describe('The location to get the weather for'),
+          }),
+        }),
+      },
     })
 
-    let fullResponse = ''
     process.stdout.write('\nAssistant: ')
     for await (const delta of result.textStream) {
-      fullResponse += delta
       process.stdout.write(delta)
     }
     process.stdout.write('\n\n')
 
-    messages.push({ content: fullResponse, role: 'assistant' })
+    // eslint-disable-next-line unicorn/no-await-expression-member
+    messages.push(...(await result.response).messages)
   }
 }
 

@@ -17,9 +17,6 @@ export interface OllamaProvider extends ProviderV1 {
     settings?: OllamaChatSettings,
   ): LanguageModelV1
 
-  /**
-   * @deprecated Use `textEmbeddingModel` instead.
-   */
   embedding(
     modelId: OllamaEmbeddingModelId,
     settings?: OllamaEmbeddingSettings,
@@ -29,14 +26,6 @@ export interface OllamaProvider extends ProviderV1 {
     modelId: OllamaChatModelId,
     settings?: OllamaChatSettings,
   ): LanguageModelV1
-
-  /**
-   * @deprecated Use `textEmbeddingModel()` instead.
-   */
-  textEmbedding(
-    modelId: OllamaEmbeddingModelId,
-    settings?: OllamaEmbeddingSettings,
-  ): EmbeddingModelV1<string>
 
   textEmbeddingModel(
     modelId: OllamaEmbeddingModelId,

@@ -1,4 +1,6 @@
 export type OllamaChatModelId =
+  | 'athene-v2'
+  | 'athene-v2:72b'
   | 'aya-expanse'
   | 'aya-expanse:8b'
   | 'aya-expanse:32b'
@@ -92,6 +94,9 @@ export type OllamaChatModelId =
   | 'nemotron:70b'
   | 'nemotron-mini'
   | 'nemotron-mini:4b'
+  | 'opencoder'
+  | 'opencoder:1.5b'
+  | 'opencoder:8b'
   | 'phi3'
   | 'phi3:3.8b'
   | 'phi3:14b'
@@ -117,8 +122,12 @@ export type OllamaChatModelId =
   | 'qwen2.5:32b'
   | 'qwen2.5:72b'
   | 'qwen2.5-coder'
+  | 'qwen2.5-coder:0.5b'
   | 'qwen2.5-coder:1.5b'
+  | 'qwen2.5-coder:3b'
   | 'qwen2.5-coder:7b'
+  | 'qwen2.5-coder:14b'
+  | 'qwen2.5-coder:32b'
   | 'shieldgemma'
   | 'shieldgemma:2b'
   | 'shieldgemma:9b'
@@ -127,6 +136,9 @@ export type OllamaChatModelId =
   | 'smollm:135m'
   | 'smollm:360m'
   | 'smollm:1.7b'
+  | 'tulu3'
+  | 'tulu3:8b'
+  | 'tulu3:70b'
   | (string & NonNullable<unknown>)
 
 export interface OllamaChatSettings {
@@ -225,26 +237,10 @@ export interface OllamaChatSettings {
   repeatPenalty?: number
 
   /**
-   * Sets the stop sequences to use. When this pattern is encountered the LLM will stop generating text and return.
-   * Multiple stop patterns may be set by specifying multiple separate `stop` parameters in a modelfile.
-   *
-   * @deprecated Use `stopSequences` from AI SDK functions.
-   */
-  stop?: string
-
-  /**
    * Tail free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0)
    * will reduce the impact more, while a value of 1.0 disables this setting. (default: 1)
    */
   tfsZ?: number
-
-  /**
-   * Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a
-   * lower value (e.g. 10) will be more conservative. (Default: 40)
-   *
-   * @deprecated Use `topK` from AI SDK functions.
-   */
-  topK?: number
 
   /**
    * Controls the "typical" sampling probability. (Default: 1.0)

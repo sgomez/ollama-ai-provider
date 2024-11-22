@@ -33,4 +33,4 @@ async function main(model: Parameters<typeof ollama>[0]) {
   console.log(JSON.stringify(object.artwork, null, 2))
 }
 
-buildProgram('llava:13b', main).catch(console.error)
+buildProgram('llama3.2-vision', main).catch(console.error)

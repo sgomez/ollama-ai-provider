@@ -7,8 +7,8 @@ import { ollama } from 'ollama-ai-provider'
 const myOllama = customProvider({
   fallbackProvider: ollama,
   languageModels: {
-    multimodal: ollama('llava'),
-    text: ollama('llama3.1'),
+    multimodal: ollama('llama3.2-vision'),
+    text: ollama('llama3.2'),
   },
 })
 
