@@ -1,5 +1,17 @@
 # ollama-ai-provider
 
+## 1.0.0
+
+### Major Changes
+
+- Release 1.0.0
+
+  - Requires AI SDK 4.0
+  - Removed deprecated OllamaChatSettings
+    - stop
+    - topK
+  - Removed ollama-facade
+
 ## 0.16.1
 
 ### Patch Changes
