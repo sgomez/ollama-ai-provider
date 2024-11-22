@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const { text, usage } = await generateText({
+  await generateText({
     maxSteps: 5,
     model: ollama(model),
     onStepFinish: (step) => {

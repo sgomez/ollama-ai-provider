@@ -3,8 +3,8 @@ import { ollama } from 'ollama-ai-provider'
 
 export async function buildProgram(
   defaultModel:
-    | Parameters<typeof ollama>[0]
-    | Parameters<typeof ollama.embedding>[0],
+    | Parameters<typeof ollama.languageModel>[0]
+    | Parameters<typeof ollama.textEmbeddingModel>[0],
   action: (model: string) => Promise<void>,
 ) {
   const program = new Command()

@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@opentelemetry/sdk-node": "0.52.0",
+    "@opentelemetry/sdk-node": "0.54.2",
     "@opentelemetry/auto-instrumentations-node": "0.47.0",
-    "@opentelemetry/sdk-trace-node": "1.25.0",
-    "ai": "latest",
+    "@opentelemetry/sdk-trace-node": "1.27.0",
+    "ai": "^4.0.0",
     "commander": "^12.1.0",
     "mathjs": "12.4.2",
     "ollama-ai-provider": "workspace:latest",
@@ -17,6 +17,6 @@
   "devDependencies": {
     "@types/node": "20.11.20",
     "tsx": "4.7.1",
-    "typescript": "5.5.4"
+    "typescript": "5.6.3"
   }
 }
