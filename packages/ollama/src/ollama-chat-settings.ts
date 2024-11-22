@@ -1,4 +1,6 @@
 export type OllamaChatModelId =
+  | 'athene-v2'
+  | 'athene-v2:72b'
   | 'aya-expanse'
   | 'aya-expanse:8b'
   | 'aya-expanse:32b'
@@ -92,6 +94,9 @@ export type OllamaChatModelId =
   | 'nemotron:70b'
   | 'nemotron-mini'
   | 'nemotron-mini:4b'
+  | 'opencoder'
+  | 'opencoder:1.5b'
+  | 'opencoder:8b'
   | 'phi3'
   | 'phi3:3.8b'
   | 'phi3:14b'
@@ -117,8 +122,12 @@ export type OllamaChatModelId =
   | 'qwen2.5:32b'
   | 'qwen2.5:72b'
   | 'qwen2.5-coder'
+  | 'qwen2.5-coder:0.5b'
   | 'qwen2.5-coder:1.5b'
+  | 'qwen2.5-coder:3b'
   | 'qwen2.5-coder:7b'
+  | 'qwen2.5-coder:14b'
+  | 'qwen2.5-coder:32b'
   | 'shieldgemma'
   | 'shieldgemma:2b'
   | 'shieldgemma:9b'
@@ -127,6 +136,9 @@ export type OllamaChatModelId =
   | 'smollm:135m'
   | 'smollm:360m'
   | 'smollm:1.7b'
+  | 'tulu3'
+  | 'tulu3:8b'
+  | 'tulu3:70b'
   | (string & NonNullable<unknown>)
 
 export interface OllamaChatSettings {
