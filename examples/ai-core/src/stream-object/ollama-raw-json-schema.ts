@@ -6,7 +6,7 @@ import { ollama } from 'ollama-ai-provider'
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const result = await streamObject({
+  const result = streamObject({
     model: ollama(model),
     prompt: 'Generate a lasagna recipe.',
     schema: jsonSchema<{

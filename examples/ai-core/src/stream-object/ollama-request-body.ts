@@ -7,9 +7,9 @@ import { z } from 'zod'
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const result = await streamObject({
+  const result = streamObject({
     maxTokens: 2000,
-    model: ollama(model),
+    model: ollama(model, { structuredOutputs: true }),
     prompt:
       'Generate 3 character descriptions for a fantasy role playing game.',
     schema: z.object({
@@ -24,7 +24,6 @@ async function main(model: Parameters<typeof ollama>[0]) {
       ),
     }),
   })
-
   // consume stream
   for await (const part of result.partialObjectStream) {
   }

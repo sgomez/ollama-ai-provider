@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const { elementStream: destinations } = await streamObject({
+  const { elementStream: destinations } = streamObject({
     model: ollama(model),
     output: 'array',
     prompt: 'What are the top 5 cities for short vacations in Europe?',

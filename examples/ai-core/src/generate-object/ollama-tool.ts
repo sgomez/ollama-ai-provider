@@ -15,7 +15,7 @@ async function main(model: OllamaChatModelId) {
   const result = await generateObject({
     maxTokens: 2000,
     mode: 'tool',
-    model: ollama(model),
+    model: ollama(model, { structuredOutputs: true }),
     prompt:
       'Generate 3 character descriptions for a fantasy role playing game.',
     schema: z.object({

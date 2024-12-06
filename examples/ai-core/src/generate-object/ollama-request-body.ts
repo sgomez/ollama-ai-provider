@@ -8,7 +8,7 @@ import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
   const { request } = await generateObject({
-    model: ollama(model),
+    model: ollama(model, { structuredOutputs: true }),
     prompt: 'Generate a lasagna recipe.',
     schema: z.object({
       recipe: z.object({

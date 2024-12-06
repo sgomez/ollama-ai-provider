@@ -11,7 +11,7 @@ console.log(
 )
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const result = await streamObject({
+  const result = streamObject({
     maxTokens: 2000,
     mode: 'tool',
     model: ollama(model),

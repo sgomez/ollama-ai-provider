@@ -8,7 +8,7 @@ import { buildProgram } from '../tools/command'
 async function main(model: Parameters<typeof ollama>[0]) {
   const result = await generateObject({
     enum: ['action', 'comedy', 'drama', 'horror', 'sci-fi'],
-    model: ollama(model),
+    model: ollama(model, { structuredOutputs: true }),
     output: 'enum',
     prompt:
       'Classify the genre of this movie plot: ' +

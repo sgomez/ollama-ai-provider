@@ -1,13 +1,13 @@
 #! /usr/bin/env -S pnpm tsx
 
-import { CompletionTokenUsage, streamObject } from 'ai'
+import { LanguageModelUsage, streamObject } from 'ai'
 import { ollama } from 'ollama-ai-provider'
 import { z } from 'zod'
 
 import { buildProgram } from '../tools/command'
 
 async function main(model: Parameters<typeof ollama>[0]) {
-  const result = await streamObject({
+  const result = streamObject({
     model: ollama(model),
     prompt: 'Generate a lasagna recipe with two ingredients.',
     schema: z.object({
@@ -32,7 +32,7 @@ function recordTokenUsage({
   completionTokens,
   promptTokens,
   totalTokens,
-}: CompletionTokenUsage) {
+}: LanguageModelUsage) {
   console.log('Prompt tokens:', promptTokens)
   console.log('Completion tokens:', completionTokens)
   console.log('Total tokens:', totalTokens)
