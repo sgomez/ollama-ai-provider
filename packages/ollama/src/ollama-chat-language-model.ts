@@ -41,6 +41,10 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     public readonly config: OllamaChatConfig,
   ) {}
 
+  get supportsStructuredOutputs(): boolean {
+    return this.settings.structuredOutputs ?? false
+  }
+
   get provider(): string {
     return this.config.provider
   }
@@ -65,10 +69,12 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
     if (
       responseFormat !== undefined &&
       responseFormat.type === 'json' &&
-      responseFormat.schema !== undefined
+      responseFormat.schema !== undefined &&
+      !this.supportsStructuredOutputs
     ) {
       warnings.push({
-        details: 'JSON response format schema is not supported',
+        details:
+          'JSON response format schema is only supported with structuredOutputs',
         setting: 'responseFormat',
         type: 'unsupported-setting',
       })
@@ -131,7 +137,10 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
         return {
           args: {
             ...baseArguments,
-            format: 'json',
+            format:
+              this.supportsStructuredOutputs && mode.schema !== undefined
+                ? mode.schema
+                : 'json',
             messages: convertToOllamaChatMessages(prompt),
           },
           type,

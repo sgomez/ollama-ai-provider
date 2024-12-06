@@ -237,6 +237,13 @@ export interface OllamaChatSettings {
   repeatPenalty?: number
 
   /**
+   * Whether to use structured outputs. Defaults to false.
+   *
+   * When enabled, tool calls and object generation will be strict and follow the provided schema.
+   */
+  structuredOutputs?: boolean
+
+  /**
    * Tail free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0)
    * will reduce the impact more, while a value of 1.0 disables this setting. (default: 1)
    */
