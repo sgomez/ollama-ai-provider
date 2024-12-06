@@ -3,6 +3,10 @@
 The **[Ollama Provider](https://github.com/sgomez/ollama-ai-provider)** for the [Vercel AI SDK](https://sdk.vercel.ai/docs)
 contains language model support for the Ollama APIs and embedding model support for the Ollama embeddings API.
 
+## Requirements
+
+This provider requires Ollama >= 0.5.0
+
 ## Setup
 
 The Ollama provider is available in the `ollama-ai-provider` module. You can install it with

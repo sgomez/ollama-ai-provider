@@ -1,13 +1,10 @@
 # ollama-ai-provider
 
-Vercel AI Provider for running Large Language Models locally using Ollama
+Vercel AI Provider for running Large Language Models locally using Ollama.
 
-> **Note: This module is under development and may contain errors and frequent incompatible changes.**
-> 
-> All releases will be of type MAJOR following the 0.MAJOR.MINOR scheme. Only bugs and model updates will be released as MINOR.
-> Please read the [Tested models and capabilities](#tested-models-and-capabilities) section to know about the features
-> implemented in this provider.
+## Requirements
 
+This provider requires Ollama >= 0.5.0
 
 ## Installation
 
@@ -78,6 +75,7 @@ You need to use any model with visual understanding. These are tested:
 * llava
 * llava-llama3
 * llava-phi3
+* llama3.2-vision
 * moondream
 
 Ollama does not support URLs, but the ai-sdk is able to download the file and send it to the model.
