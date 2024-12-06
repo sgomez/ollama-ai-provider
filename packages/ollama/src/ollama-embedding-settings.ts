@@ -15,6 +15,8 @@ export type OllamaEmbeddingModelId =
   | 'snowflake-arctic-embed:22m'
   | 'snowflake-arctic-embed:335m'
   | 'snowflake-arctic-embed:33m'
+  | 'snowflake-arctic-embed2'
+  | 'snowflake-arctic-embed2:568m'
   | OllamaChatModelId
   | (string & NonNullable<unknown>)
 
