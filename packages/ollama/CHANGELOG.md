@@ -1,12 +1,18 @@
 # ollama-ai-provider
 
+## 1.2.0
+
+### Minor Changes
+
+- Implement simulateStreaming setting
+
 ## 1.1.0
 
 ### Minor Changes
 
 - Add support to structured output
 - Requires Ollama >= 0.5.0
-  
+
 ## 1.0.0
 
 ### Major Changes
