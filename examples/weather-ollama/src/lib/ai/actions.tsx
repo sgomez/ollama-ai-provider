@@ -56,7 +56,7 @@ export async function submitUserMessage(content: string): Promise<{
       name: message.name,
       role: message.role,
     })),
-    model: ollama('llama3.1'),
+    model: ollama('llama3.1', { simulateStreaming: true }),
     system: PROMPT,
     // eslint-disable-next-line @typescript-eslint/no-shadow
     text: ({ content, delta, done }) => {

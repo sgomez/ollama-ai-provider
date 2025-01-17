@@ -107,16 +107,18 @@ Caveats:
 
 ### Tool streaming
 
-> This feature is not completed and unstable
+> This feature is experimental and uses simulation.
 
-Ollama tooling does not support it in streams, but this provider can detect tool responses.
+Tool streaming is not natively supported by Ollama tooling. Previously, the `experimentalStreamTools` option was used to handle tool responses in a simulated streaming mode. While this option is still active by default for backward compatibility, it has been deprecated in favor of the new simulateStreaming option.
 
-You can disable this experimental feature with `` setting:
+The simulateStreaming option provides a streaming-like experience by generating the complete response using the generate method and then sending it to the client in segments. This approach simulates real-time streaming while ensuring compatibility with models that do not natively support this feature.
+
+To enable simulated streaming, update your configuration as follows:
 
 ```ts
 ollama("model", {
-  experimentalStreamTools: false,
-})
+  simulateStreaming: true
+});
 ```
 
 ### Intercepting Fetch Requests

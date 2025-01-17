@@ -232,6 +232,52 @@ export class OllamaChatLanguageModel implements LanguageModelV1 {
   async doStream(
     options: Parameters<LanguageModelV1['doStream']>[0],
   ): Promise<Awaited<ReturnType<LanguageModelV1['doStream']>>> {
+    if (this.settings.simulateStreaming) {
+      const result = await this.doGenerate(options)
+
+      const simulatedStream = new ReadableStream<LanguageModelV1StreamPart>({
+        start(controller) {
+          controller.enqueue({ type: 'response-metadata', ...result.response })
+          if (result.text) {
+            controller.enqueue({
+              textDelta: result.text,
+              type: 'text-delta',
+            })
+          }
+          if (result.toolCalls) {
+            for (const toolCall of result.toolCalls) {
+              controller.enqueue({
+                argsTextDelta: toolCall.args,
+                toolCallId: toolCall.toolCallId,
+                toolCallType: 'function',
+                toolName: toolCall.toolName,
+                type: 'tool-call-delta',
+              })
+
+              controller.enqueue({
+                type: 'tool-call',
+                ...toolCall,
+              })
+            }
+          }
+          controller.enqueue({
+            finishReason: result.finishReason,
+            logprobs: result.logprobs,
+            providerMetadata: result.providerMetadata,
+            type: 'finish',
+            usage: result.usage,
+          })
+          controller.close()
+        },
+      })
+      return {
+        rawCall: result.rawCall,
+        rawResponse: result.rawResponse,
+        stream: simulatedStream,
+        warnings: result.warnings,
+      }
+    }
+
     const { args: body, type, warnings } = this.getArguments(options)
 
     const { responseHeaders, value: response } = await postJsonToApi({

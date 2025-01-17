@@ -157,6 +157,8 @@ export interface OllamaChatSettings {
   /**
    * Until Ollama officially supports tool calling in streams, the provider can try to detect function calls. Enabled by
    * default to maintain backward compatibility, disable it if you encounter any issues.
+   *
+   * @deprecated Use `simulateStreaming` instead.
    */
   experimentalStreamTools?: boolean
 
@@ -247,6 +249,14 @@ export interface OllamaChatSettings {
    * , while a lower value (e.g., 0.9) will be more lenient. (Default: 1.1)
    */
   repeatPenalty?: number
+
+  /**
+   Simulates streaming by using a normal generate call and returning it as a stream.
+   Enable this if the model that you are using does not support streaming.
+
+   Defaults to `false`.
+   */
+  simulateStreaming?: boolean
 
   /**
    * Whether to use structured outputs. Defaults to false.
